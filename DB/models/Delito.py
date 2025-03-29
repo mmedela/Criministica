@@ -1,4 +1,4 @@
-from Base import *
+from .Base import *
 
 class Delito(Base):
     __tablename__ = 'delitos'
@@ -10,4 +10,4 @@ class Delito(Base):
     estadisticas = relationship('EstadisticaDelito', back_populates='delito')
     
     def __repr__(self):
-        return f"<Delito(id={self.id}, nombre={self.nombre_delito_snic})>"
+        return f"<Delito(id={self.codigo_delito_snic_id}, nombre={self.codigo_delito_snic_nombre})>"
