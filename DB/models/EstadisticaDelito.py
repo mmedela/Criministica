@@ -16,3 +16,9 @@ class EstadisticaDelito(Base):
     tasa_victimas = Column(Integer)
     tasa_victimas_masc = Column(Integer)
     tasa_victimas_fem = Column(Integer)
+    
+    provincia = relationship("Provincia", back_populates="estadisticas")
+    delito = relationship("Delito", back_populates="estadisticas")
+    
+    def __repr__(self):
+        return f"<EstadisticaDelito(id={self.id}, anio={self.anio}, provincia={self.provincia.nombre}, delito={self.delito.nombre_delito_snic})>"
