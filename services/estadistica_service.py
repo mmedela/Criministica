@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from ..DB.models.EstadisticaDelito import EstadisticaDelito
+from DB.models.EstadisticaDelito import EstadisticaDelito
 from schemas.estadistica_schema import EstadisticaCreate, EstadisticaUpdate
 
 def get_estadisticas(db: Session, provincia_id: int = None, delito_id: int = None, anio: int = None):

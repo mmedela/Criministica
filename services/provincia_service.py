@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
-from ..DB.models.Provincia import Provincia
-from ..schemas.provincia_schema import ProvinciaCreate, ProvinciaUpdate
+from DB.models.Provincia import Provincia
+from schemas.provincia_schema import ProvinciaCreate, ProvinciaUpdate
 from sqlalchemy.exc import IntegrityError
 
 def get_provincias(db: Session):

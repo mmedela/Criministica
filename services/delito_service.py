@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from ..DB.models.Delito import Delito
+from DB.models.Delito import Delito
 from schemas.delito_schema import DelitoCreate, DelitoUpdate
 
 def get_delitos(db: Session):

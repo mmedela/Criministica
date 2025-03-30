@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..DB.init_db import session
-from ..services.delito_service import (
+from DB.init_db import session
+from services.delito_service import (
     get_delitos,
     get_delito_by_id,
     create_delito,
     delete_delito,
     update_delito
 )
-from ..schemas.delito_schema import DelitoCreate, DelitoResponse, DelitoUpdate
+from schemas.delito_schema import DelitoCreate, DelitoResponse, DelitoUpdate
 from typing import List
 
 router = APIRouter(prefix="/delitos", tags=["Delitos"])

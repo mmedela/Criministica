@@ -1,14 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from ..DB.init_db import session
-from ..services.provincia_service import (
+from DB.init_db import session
+from services.provincia_service import (
     get_provincias,
     get_provincia,
     create_provincia,
     update_provincia,
     delete_provincia
 )
-from ..schemas.provincia_schema import ProvinciaCreate, ProvinciaResponse, ProvinciaUpdate
+from schemas.provincia_schema import ProvinciaCreate, ProvinciaResponse, ProvinciaUpdate
 from typing import List
 
 router = APIRouter(prefix="/provincias", tags=["Provincias"])

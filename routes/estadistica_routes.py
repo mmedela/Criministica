@@ -1,15 +1,15 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import List, Optional
-from ..DB.init_db import session
-from ..services.estadistica_service import (
+from DB.init_db import session
+from services.estadistica_service import (
     get_estadisticas,
     get_estadistica_by_id,
     create_estadistica,
     update_estadistica,
     delete_estadistica
 )
-from ..schemas.estadistica_schema import EstadisticaCreate, EstadisticaResponse, EstadisticaUpdate
+from schemas.estadistica_schema import EstadisticaCreate, EstadisticaResponse, EstadisticaUpdate
 
 router = APIRouter(prefix="/estadisticas-delitos", tags=["Estadísticas de Delitos"])
 
