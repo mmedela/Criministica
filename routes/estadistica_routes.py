@@ -27,7 +27,8 @@ def listar_estadisticas(
     delito_id: Optional[int] = Query(None),
     anio: Optional[int] = Query(None)
 ):
-    return get_estadisticas(db, provincia_id, delito_id, anio)
+    estadisticas = get_estadisticas(db, provincia_id, delito_id, anio)
+    return [EstadisticaResponse.model_validate(e, from_attributes=True) for e in estadisticas]
 
 @router.get("/{estadistica_id}", response_model=EstadisticaResponse)
 def obtener_estadistica(estadistica_id: int, db: Session = Depends(get_db)):
