@@ -1,6 +1,6 @@
 import pandas as pd
 from sqlalchemy.dialects.postgresql import insert
-from models.Base import session
+from init_db import session
 from models.Provincia import Provincia
 from models.Delito import Delito
 from models.EstadisticaDelito import EstadisticaDelito

@@ -7,4 +7,3 @@ Base = declarative_base()
 
 engine = create_engine(DATABASE_URL, echo=True)
 
-session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
