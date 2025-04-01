@@ -1,0 +1,30 @@
+<div id="estadisticas-container">
+    <table>
+        <thead>
+            <tr>
+                <th>Año</th>
+                <th>Provincia</th>
+                <th>Código de delito</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for estadistica in estadisticas %}
+                <tr>
+                    <td>{{ estadistica.anio }}</td>
+                    <td>{{ estadistica.provincia }}</td>
+                    <td>{{ estadistica.delito }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if estadisticas %}
+        <button 
+            hx-get="/estadisticas-delitos/more?page={{ next_page }}" 
+            hx-target="#estadisticas-container" 
+            hx-swap="innerHTML"
+        >
+            Cargar más
+        </button>
+    {% endif %}
+</div>
