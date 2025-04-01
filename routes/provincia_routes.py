@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from sqlalchemy.orm import Session
 from DB.init_db import session
 from services.provincia_service import (
@@ -6,7 +6,8 @@ from services.provincia_service import (
     get_provincia,
     create_provincia,
     update_provincia,
-    delete_provincia
+    delete_provincia,
+    actualizar_poblacion_desde_csv
 )
 from schemas.provincia_schema import ProvinciaCreate, ProvinciaResponse, ProvinciaUpdate
 from typing import List
@@ -35,6 +36,12 @@ def obtener_provincia(provincia_id: int, db: Session = Depends(get_db)):
 def agregar_provincia(provincia: ProvinciaCreate, db: Session = Depends(get_db)):
     return create_provincia(db, provincia)
 
+@router.post("/cargar_poblacion")
+async def cargar_poblacion(file: UploadFile = File(...), db: Session = Depends(get_db)):
+    content = await file.read()
+    result = actualizar_poblacion_desde_csv(db, content.decode("utf-8"))
+    return result
+
 @router.put("/{provincia_id}", response_model=ProvinciaResponse)
 def modificar_provincia(provincia_id: int, provincia: ProvinciaUpdate, db: Session = Depends(get_db)):
     return update_provincia(db, provincia_id, provincia)
@@ -43,3 +50,5 @@ def modificar_provincia(provincia_id: int, provincia: ProvinciaUpdate, db: Sessi
 def eliminar_provincia(provincia_id: int, db: Session = Depends(get_db)):
     delete_provincia(db, provincia_id)
     return {"message": "Provincia eliminada exitosamente"}
+
+
