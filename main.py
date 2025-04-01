@@ -23,6 +23,10 @@ app.include_router(estadistica_calculada_router)
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get("/upload", response_class=HTMLResponse)
+def upload_page(request: Request):
+    return templates.TemplateResponse("provincias_upload.html", {"request": request})
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8000)
