@@ -1,16 +1,29 @@
 from sqlalchemy.orm import Session
 from DB.models.EstadisticaDelito import EstadisticaDelito
+from DB.models.Provincia import Provincia
+from DB.models.Delito import Delito
 from schemas.estadistica_schema import EstadisticaCreate, EstadisticaUpdate
 
-def get_estadisticas(db: Session, provincia_id: int = None, delito_id: int = None, anio: int = None):
-    query = db.query(EstadisticaDelito)
+def get_estadisticas(db: Session, provincia_id=None, delito_id=None, anio=None, limit=None, offset=0):
+    query = (
+        db.query(
+            EstadisticaDelito.id,
+            EstadisticaDelito.anio,
+            Provincia.provincia_nombre.label("provincia"),
+            Delito.codigo_delito_snic_nombre.label("delito"),
+        )
+        .join(Provincia, EstadisticaDelito.provincia_id == Provincia.provincia_id)
+        .join(Delito, EstadisticaDelito.codigo_delito_snic_id == Delito.codigo_delito_snic_id)
+    )
+
     if provincia_id:
-        query = query.filter(EstadisticaDelito.provincia_id == provincia_id)
+        query = query.filter(EstadisticaDelito.provincia == provincia_id)
     if delito_id:
-        query = query.filter(EstadisticaDelito.codigo_delito_snic_id == delito_id)
+        query = query.filter(EstadisticaDelito.delito == delito_id)
     if anio:
         query = query.filter(EstadisticaDelito.anio == anio)
-    return query.all()
+
+    return query.offset(offset).limit(limit).all()
 
 def get_estadistica_by_id(db: Session, estadistica_id: int):
     return db.query(EstadisticaDelito).filter(EstadisticaDelito.id == estadistica_id).first()
