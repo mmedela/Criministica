@@ -50,7 +50,7 @@ def delete_provincia(db: Session, provincia_id: int):
 
 def actualizar_poblacion_desde_csv(db: Session, file_content: str):
     reader = csv.reader(StringIO(file_content))
-    next(reader, None)  # Saltar encabezado si existe
+    next(reader, None)
 
     actualizadas = 0
     for row in reader:
@@ -60,10 +60,7 @@ def actualizar_poblacion_desde_csv(db: Session, file_content: str):
             provincia_id = int(row[0])
             poblacion = int(row[1])
         except ValueError:
-            print(int(row(0)))
-            print(int(row(1)))
-            continue  # Ignorar filas con datos inválidos
-
+            continue 
         provincia = db.query(Provincia).filter(Provincia.provincia_id == provincia_id).first()
         if provincia:
             provincia.poblacion = poblacion

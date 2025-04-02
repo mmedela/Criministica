@@ -46,7 +46,6 @@ def cargar_estadisticas_parciales(
     estadisticas = get_estadisticas(db, limit=limit, offset=offset)  
     if not estadisticas:
         raise HTTPException(status_code=404, detail="No se encontraron más estadísticas.")
-    print(estadisticas[0].provincia)
     return templates.TemplateResponse(
         "estadisticas_partial.html", 
         {"request": request, "estadisticas": estadisticas, "next_page": offset + limit}
