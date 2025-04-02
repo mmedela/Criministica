@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, case
 from DB.models.EstadisticaDelito import EstadisticaDelito
 from DB.models.Delito import Delito
 from DB.models.Provincia import Provincia
@@ -18,14 +18,22 @@ def calcular_total_delitos(db: Session, provincia_id: int = None, anio: int = No
 
 
 def calcular_tasa_criminalidad(db: Session, provincia_id: int):
-    total_delitos = db.query(func.sum(EstadisticaDelito.cantidad_hechos)) \
-                      .filter(EstadisticaDelito.provincia_id == provincia_id) \
-                      .scalar() or 0
-    
-    provincia = db.query(Provincia).filter(Provincia.provincia_id == provincia_id).first()
-    poblacion = provincia.poblacion if provincia else 0
-
-    return (total_delitos / poblacion) * 100000 if poblacion > 0 else 0
+    resultados = (
+        db.query(
+           EstadisticaDelito.anio,
+            func.round(
+                case(
+                    (Provincia.poblacion > 0, (func.sum(EstadisticaDelito.cantidad_hechos) / Provincia.poblacion) * 100000),
+                    else_=0
+                ), 2
+            ).label("tasa_criminalidad")
+        )
+        .join(Provincia, Provincia.provincia_id == EstadisticaDelito.provincia_id)
+        .filter(EstadisticaDelito.provincia_id == provincia_id)
+        .group_by(EstadisticaDelito.anio, Provincia.poblacion)
+        .all()
+    )
+    return {str(anio): float(tasa) for anio, tasa in resultados}
 
 
 def calcular_porcentaje_delitos_provincia(db: Session, provincia_id: int):
