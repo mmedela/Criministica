@@ -1,5 +1,5 @@
 from fastapi import FastAPI, Request, HTTPException
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from routes.provincia_routes import router as provincia_router
@@ -13,11 +13,38 @@ app = FastAPI(title="Crime Statistics API", description="API for managing crime 
 
 templates = Jinja2Templates(directory="templates")
 
-# Incluir routers: se especifica un prefijo y etiquetas para cada uno
+@app.exception_handler(HTTPException)
+async def http_exception_handler(request: Request, exc: HTTPException):
+    return JSONResponse(
+        status_code=exc.status_code,
+        content={
+            "type": "about:blank", 
+            "title": "Error" if not isinstance(exc.detail, str) else exc.detail,
+            "status": exc.status_code,
+            "detail": exc.detail,
+            "instance": str(request.url)
+        }
+    )
+
+@app.exception_handler(Exception)
+async def generic_exception_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=500,
+        content={
+            "type": "about:blank",
+            "title": "Internal Server Error",
+            "status": 500,
+            "detail": str(exc),
+            "instance": str(request.url)
+        }
+    )
+
 app.include_router(provincia_router)
 app.include_router(delito_router)
 app.include_router(estadistica_router)
 app.include_router(estadistica_calculada_router)
+
+
 
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
