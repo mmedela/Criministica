@@ -7,7 +7,7 @@ from routes.delito_routes import router as delito_router
 from routes.estadistica_routes import router as estadistica_router
 from routes.estadistica_calculada_routes import router as estadistica_calculada_router
 
-app = FastAPI(title="Crime Statistics API", description="API for managing crime statistics in Argentina")
+app = FastAPI(title="Crime Statistics API", description="API for managing crime statistics in Argentina", version="0.1.3")
 
 #app.mount("/static", StaticFiles(directory="static"), name="static")
 
@@ -22,6 +22,14 @@ app.include_router(estadistica_calculada_router)
 @app.get("/", response_class=HTMLResponse)
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/version")
+def get_version():
+    return {"version": app.version}
+
+@app.get("/health", tags=["system"])
+def health_check():
+    return {"status": "Running"}
 
 @app.get("/upload", response_class=HTMLResponse)
 def upload_page(request: Request):
