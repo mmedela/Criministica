@@ -1,3 +1,4 @@
+from typing import List
 from sqlalchemy.orm import Session
 from DB.models.Provincia import Provincia
 from schemas.provincia_schema import ProvinciaCreate, ProvinciaUpdate
@@ -68,3 +69,31 @@ def actualizar_poblacion_desde_csv(db: Session, file_content: str):
 
     db.commit()
     return {"message": f"Población actualizada para {actualizadas} provincias"}
+
+
+def update_provincias_batch(db: Session, updates: List[ProvinciaUpdate]) -> int:
+    try:
+        db.bulk_update_mappings(Provincia, [update.dict() for update in updates])
+        db.commit()
+        return len(updates)
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error updating provinces: {e}")
+
+def delete_provincias_batch(db: Session, provincia_ids: List[int]) -> int:
+    try:
+        stmt = db.delete(Provincia).where(Provincia.provincia_id.in_(provincia_ids))
+        result = db.execute(stmt)
+        db.commit()
+        if result.rowcount == 0:
+            raise HTTPException(status_code=404, detail="No provinces found to delete")
+        return result.rowcount
+    except SQLAlchemyError as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail=f"Error deleting provinces: {e}")
+
+def get_provincias_batch(db: Session, provincia_ids: List[int]) -> List[Provincia]:
+    provincias = db.query(Provincia).filter(Provincia.provincia_id.in_(provincia_ids)).all()
+    if not provincias:
+        raise HTTPException(status_code=404, detail="No provinces found")
+    return provincias
