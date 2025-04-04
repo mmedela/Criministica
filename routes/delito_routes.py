@@ -53,16 +53,11 @@ def eliminar_delito(delito_id: int, db: Session = Depends(get_db)):
 @router.post("/delitos/batch", status_code=201)
 def create_delitos(delitos: List[DelitoCreate], db: Session = Depends(get_db)):
     delitos = create_delitos_service(db, delitos)
-    if delitos == -1:
-        raise HTTPException(status_code=500, detail="Error inserting delitos")
-    
     return {"message": f"{delitos} delitos added successfully"}
 
 @router.put("/delitos/batch")
 def update_delitos(updates: List[DelitoUpdate], db: Session = Depends(get_db)):
     result = update_delitos_service(db, updates)
-    if result == -1:
-        raise HTTPException(status_code=500, detail="Error updating delitos")
     return {"message": f"{result} delitos updated successfully"}
 
 @router.delete("/delitos/batch")
@@ -70,8 +65,6 @@ def delete_delitos_service(delito_ids: List[int], db: Session = Depends(get_db))
     rows_deleted = delete_delitos_service(delito_ids, db)
     if rows_deleted == 0:
         raise HTTPException(status_code=404, detail="No delitos found to delete")
-    if rows_deleted == -1:
-        raise HTTPException(status_code=500, detail="Error deleting delitos")
     return {"message": f"{rows_deleted} delitos deleted successfully"}
 
 @router.get("/delitos/batch", response_model=List[DelitoCreate])

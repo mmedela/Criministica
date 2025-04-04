@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from typing import List
 from sqlalchemy.orm import Session
 from DB.models.Delito import Delito
@@ -33,22 +35,22 @@ def delete_delito_service(db: Session, delito_id: int):
     return delito
 
 def create_delitos_service(db: Session, delitos: List[DelitoCreate]):
-        try:
-            db.bulk_insert_mappings(Delito, [d.dict() for d in delitos])
-            db.commit()
-            return len(delitos)
-        except Exception:
-            db.rollback()
-            return -1
+    try:
+        db.bulk_insert_mappings(Delito, [d.dict() for d in delitos])
+        db.commit()
+        return len(delitos)
+    except SQLAlchemyError:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Error inserting delitos")
                     
 def update_delitos_service(db: Session, updates: List[DelitoUpdate]):
     try:
         db.bulk_update_mappings(Delito, [u.dict() for u in updates])
         db.commit()
         return len(updates)
-    except Exception:
+    except SQLAlchemyError:
         db.rollback()
-        return -1
+        raise HTTPException(status_code=500, detail="Error updating delitos")
     
 def delete_delitos_service(db: Session, delito_ids: List[int]):
     try:
@@ -56,9 +58,10 @@ def delete_delitos_service(db: Session, delito_ids: List[int]):
         result = db.execute(stmt)
         db.commit()
         return result.rowcount
-    except Exception:
+    except SQLAlchemyError:
         db.rollback()
-        return -1
+        raise HTTPException(status_code=500, detail="Error deleting delitos")
+
 
 def get_batch_delitos_service(db: Session, delito_ids: List[int]):
     return db.query(Delito).filter(Delito.codigo_delito_snic_id.in_(delito_ids)).all()
