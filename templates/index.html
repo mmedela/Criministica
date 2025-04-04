@@ -3,15 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crime Statistics</title>
+    <title>Estadísticas Criminales</title>
     <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <h1>Estadísticas de Delitos</h1>
-    <div id="estadisticas-container">
-        <div hx-get="/estadisticas-delitos/more" hx-trigger="load" hx-target="#estadisticas-container" hx-swap="innerHTML">
-            Cargando estadísticas...
+<body class="bg-gray-100 font-sans antialiased">
+
+    <header class="bg-blue-900 text-white p-6">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-3xl font-semibold">Estadísticas Criminales de la República Argentina</h1>
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="#poblaciones" class="hover:text-blue-300">Poblaciones en Provincias</a></li>
+                    <li><a href="#estadisticas-generales" class="hover:text-blue-300">Estadísticas Generales</a></li>
+                    <li><a href="#estadisticas-calculadas" class="hover:text-blue-300">Estadísticas Calculadas</a></li>
+                </ul>
+            </nav>
         </div>
-    </div>
+    </header>
+
+    <main class="container mx-auto p-8">
+        
+        <section class="bg-yellow-500 text-white rounded-lg p-6 mb-8">
+            <div class="text-center">
+                <h2 class="text-2xl font-semibold mb-4">¡Explora las estadísticas de delitos en Argentina!</h2>
+                <p class="mb-4">Descubre cómo se distribuyen los delitos a lo largo del país y conoce las tendencias criminales más recientes.</p>
+                <a href="#estadisticas-generales" class="bg-blue-800 hover:bg-blue-600 text-white py-2 px-6 rounded-lg">Ver Estadísticas Generales</a>
+            </div>
+        </section>
+
+        <section id="poblaciones" class="bg-white rounded-lg p-6 shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Poblaciones en Provincias</h2>
+            <p class="mb-4">Consulta las poblaciones de cada provincia y su relación con las estadísticas de delitos.</p>
+            <a href="/poblaciones-provincias" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg">Ver Poblaciones</a>
+        </section>
+
+        <section id="estadisticas-generales" class="bg-white rounded-lg p-6 shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Estadísticas Generales</h2>
+            <p class="mb-4">Accede a un resumen general de los delitos ocurridos en el país, organizados por provincias y categorías.</p>
+            <a href="/estadisticas-generales" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg">Ver Estadísticas Generales</a>
+        </section>
+
+        <section id="estadisticas-calculadas" class="bg-white rounded-lg p-6 shadow-lg">
+            <h2 class="text-2xl font-semibold mb-4">Estadísticas Calculadas</h2>
+            <p class="mb-4">Consulta las estadísticas calculadas basadas en promedios, tendencias y otros análisis estadísticos.</p>
+            <a href="/estadisticas-calculadas" class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg">Ver Estadísticas Calculadas</a>
+        </section>
+        
+    </main>
+
 </body>
 </html>
