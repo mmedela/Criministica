@@ -1,3 +1,5 @@
+from fastapi import HTTPException
+from sqlalchemy.exc import SQLAlchemyError
 from typing import List
 from sqlalchemy.orm import Session
 from DB.models.Provincia import Provincia
@@ -69,7 +71,6 @@ def actualizar_poblacion_desde_csv(db: Session, file_content: str):
 
     db.commit()
     return {"message": f"Población actualizada para {actualizadas} provincias"}
-
 
 def update_provincias_batch(db: Session, updates: List[ProvinciaUpdate]) -> int:
     try:

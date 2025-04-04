@@ -1,13 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
 from sqlalchemy.orm import Session
 from DB.init_db import session
 from services.provincia_service import (
+    delete_provincias_batch,
     get_provincias,
     get_provincia,
     create_provincia,
+    get_provincias_batch,
     update_provincia,
     delete_provincia,
-    actualizar_poblacion_desde_csv
+    actualizar_poblacion_desde_csv,
+    update_provincias_batch
 )
 from schemas.provincia_schema import ProvinciaCreate, ProvinciaResponse, ProvinciaUpdate
 from typing import List
@@ -52,3 +55,17 @@ def eliminar_provincia(provincia_id: int, db: Session = Depends(get_db)):
     return {"message": "Provincia eliminada exitosamente"}
 
 
+@router.put("/batch", response_model=int)
+def actualizar_provincias_batch(updates: List[ProvinciaUpdate], db: Session = Depends(get_db)):
+    updated_count = update_provincias_batch(db, updates)
+    return updated_count
+
+@router.delete("/batch", response_model=int)
+def eliminar_provincias_batch(provincia_ids: List[int], db: Session = Depends(get_db)):
+    deleted_count = delete_provincias_batch(db, provincia_ids)
+    return deleted_count
+
+@router.get("/batch", response_model=List[ProvinciaResponse])
+def obtener_provincias_batch(provincia_ids: List[int]= Query(...), db: Session = Depends(get_db)):
+    provincias = get_provincias_batch(db, provincia_ids)
+    return provincias
