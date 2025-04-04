@@ -5,10 +5,10 @@ from sqlalchemy import pool
 
 from alembic import context
 
-from models.Base import Base
-from models.Delito import Delito
-from models.EstadisticaDelito import EstadisticaDelito
-from models.Provincia import Provincia
+from DB.models.Base import Base
+from DB.models.Delito import Delito
+from DB.models.EstadisticaDelito import EstadisticaDelito
+from DB.models.Provincia import Provincia
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
