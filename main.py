@@ -54,6 +54,10 @@ def read_root(request: Request):
 def read_root(request: Request):
     return templates.TemplateResponse("poblaciones_provincias.html", {"request": request})
 
+@app.get("/estadisticas-generales", response_class=HTMLResponse)
+def read_root(request: Request):
+    return templates.TemplateResponse("estadisticas_generales.html", {"request": request})
+
 @app.get("/version")
 def get_version():
     return {"version": app.version}
