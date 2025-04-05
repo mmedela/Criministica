@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas Generales</title>
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Incluir barra de navegación -->
+    {% include 'navbar.html' %}
+
+    <main class="container mx-auto p-8">
+
+        <section class="bg-yellow-500 text-white rounded-lg p-6 mb-8">
+            <div class="text-center">
+                <h2 class="text-2xl font-semibold mb-4">Estadísticas Generales de Delitos en Argentina</h2>
+                <p class="mb-4">Consulta los delitos ocurridos por provincia, año y tipo de delito.</p>
+                <div class="text-center mb-4">
+                    <button 
+                        hx-get="/estadisticas-delitos/more?page=0" 
+                        hx-target="#estadisticas-container" 
+                        hx-swap="innerHTML" 
+                        hx-trigger="click" 
+                        hx-on="click: this.style.display='none'" 
+                        class="bg-green-600 hover:bg-green-500 text-white py-2 px-6 rounded-lg">
+                        Cargar Estadísticas Generales
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="estadisticas-generales" class="bg-white rounded-lg p-6 shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Tabla de Estadísticas Generales</h2>
+            
+            <!-- Contenedor para la tabla de estadísticas -->
+            <div id="estadisticas-container">
+                <table class="min-w-full table-auto border-collapse">
+                    <thead>
+                        <tr>
+                            <th class="px-4 py-2 border-b">Año</th>
+                            <th class="px-4 py-2 border-b">Provincia</th>
+                            <th class="px-4 py-2 border-b">Código de delito</th>
+                            <th class="px-4 py-2 border-b">Cantidad de hechos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for estadistica in estadisticas %}
+                            <tr>
+                                <td class="px-4 py-2 border-b">{{ estadistica.anio }}</td>
+                                <td class="px-4 py-2 border-b">{{ estadistica.provincia }}</td>
+                                <td class="px-4 py-2 border-b">{{ estadistica.delito }}</td>
+                                <td class="px-4 py-2 border-b">{{ estadistica.cantidad_hechos }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <!-- Botón para cargar más datos -->
+                {% if next_page %}
+                    <button 
+                        hx-get="/estadisticas-generales/more?page={{ next_page }}" 
+                        hx-target="#estadisticas-container" 
+                        hx-swap="innerHTML"
+                        class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg mt-4"
+                    >
+                        Cargar más
+                    </button>
+                {% endif %}
+            </div>
+        </section>
+
+    </main>
+
+</body>
+</html>
