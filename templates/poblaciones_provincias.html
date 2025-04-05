@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poblaciones en Provincias</title>
+    <script src="https://unpkg.com/htmx.org@1.9.3"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    {% include 'navbar.html' %}
+
+    <main class="container mx-auto p-8">
+
+        <section id="poblaciones-table" class="bg-white rounded-lg p-6 shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Tabla de Poblaciones por Provincias</h2>
+            <p class="mb-4">Aquí puedes ver la lista de provincias con sus respectivas poblaciones.</p>
+            
+            <div class="text-center mb-4">
+                <button 
+                    hx-get="/provincias/tabla_poblaciones" 
+                    hx-target="#tabla-poblaciones-body" 
+                    hx-swap="innerHTML" 
+                    hx-trigger="click" 
+                    hx-on="click: this.style.display='none'" 
+                    class="bg-green-600 hover:bg-green-500 text-white py-2 px-6 rounded-lg">
+                    Cargar Provincias y Poblaciones
+                </button>
+            </div>
+
+            <div id="tabla-poblaciones" class="overflow-x-auto">
+                <table class="min-w-full table-auto">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-4 py-2 text-left">Provincia</th>
+                            <th class="px-4 py-2 text-left">Población</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-poblaciones-body">
+                        <tr>
+                            <td colspan="2" class="text-center px-4 py-2">Haz clic en el botón para cargar los datos.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+        
+    </main>
+
+</body>
+</html>
