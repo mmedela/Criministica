@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, Query, UploadFile, File
+from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from DB.init_db import session
 from services.provincia_service import (
@@ -27,6 +28,34 @@ def get_db():
 @router.get("/", response_model=List[ProvinciaResponse])
 def listar_provincias(db: Session = Depends(get_db)):
     return get_provincias(db)
+
+@router.get("/tabla_poblaciones", response_class=HTMLResponse)
+def get_provincias_tabla_poblacion(db: Session = Depends(get_db)):
+    print("hola")
+    provincias = listar_provincias(db)
+    html = ""
+    for provincia in provincias:
+        poblacion_formateada = f"{provincia.poblacion:,}".replace(",", ".")
+        html += f"""
+        <tr>
+        <td class="px-4 py-2">{provincia.provincia_nombre}</td>
+        <td class="px-4 py-2">{poblacion_formateada}</td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <hr class="my-2" style="border-top: 1px solid #ddd;">
+            </td>
+        </tr>
+        """
+
+    if not html:
+        html = """
+        <tr>
+            <td colspan="2" class="text-center px-4 py-2">No se encontraron provincias.</td>
+        </tr>
+        """
+
+    return HTMLResponse(content=html)
 
 @router.get("/{provincia_id}", response_model=ProvinciaResponse)
 def obtener_provincia(provincia_id: int, db: Session = Depends(get_db)):
@@ -69,3 +98,4 @@ def eliminar_provincias_batch(provincia_ids: List[int], db: Session = Depends(ge
 def obtener_provincias_batch(provincia_ids: List[int]= Query(...), db: Session = Depends(get_db)):
     provincias = get_provincias_batch(db, provincia_ids)
     return provincias
+

@@ -50,6 +50,10 @@ app.include_router(estadistica_calculada_router)
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+@app.get("/poblaciones-provincias", response_class=HTMLResponse)
+def read_root(request: Request):
+    return templates.TemplateResponse("poblaciones_provincias.html", {"request": request})
+
 @app.get("/version")
 def get_version():
     return {"version": app.version}
