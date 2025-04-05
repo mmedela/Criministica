@@ -1,28 +1,91 @@
+<div class="flex space-x-4 mb-4">
+    <div class="flex-1">
+        <label for="provincia" class="block text-lg font-semibold mb-2">Selecciona una Provincia</label>
+        <select 
+            id="provincia" 
+            name="provincia_id" 
+            class="w-full mt-2 p-2 border border-gray-300 rounded-lg"
+            hx-get="/estadisticas-delitos/more?page=0" 
+            hx-trigger="change" 
+            hx-target="#estadisticas-container" 
+            hx-swap="innerHTML"
+            hx-include="#provincia, #delito"
+        >
+            <option value="">Seleccione una provincia</option>
+            {% for provincia in provincias %}
+                <option value="{{ provincia.provincia_id }}" {% if provincia.provincia_id == selected_provincia %}selected{% endif %}>
+                    {{ provincia.provincia_nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex-1">
+        <label for="delito" class="block text-lg font-semibold mb-2">Selecciona un Delito</label>
+        <select 
+            id="delito"
+            name="delito_id" 
+            class="w-full mt-2 p-2 border border-gray-300 rounded-lg"
+            hx-get="/estadisticas-delitos/more?page=0" 
+            hx-trigger="change" 
+            hx-target="#estadisticas-container" 
+            hx-swap="innerHTML"
+            hx-include="#provincia, #delito"
+        >
+            <option value="">Seleccionar Delito</option>
+            {% for delito in delitos %}
+                <option value="{{ delito.codigo_delito_snic_id }}" {% if delito.codigo_delito_snic_id == selected_delito %}selected{% endif %}>
+                    {{ delito.codigo_delito_snic_nombre }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex-1">
+        <label for="anio" class="block text-lg font-semibold mb-2">Año</label>
+        <select 
+            id="anio"
+            name="anio"
+            hx-get="/estadisticas-delitos/more?page=0&provincia_id={{ selected_provincia or '' }}&delito_id={{ selected_delito or '' }}&anio={{ selected_anio or '' }}"
+            hx-target="#estadisticas-container"
+            hx-swap="innerHTML"
+            class="w-full mt-2 p-2 border border-gray-300 rounded-lg"
+        >
+            <option value="">Seleccionar Año</option>
+            {% for y in range(2000, 2024) %}
+                <option value="{{ y }}" {% if y == selected_anio %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
 <div id="estadisticas-container">
-    <table>
+    <table class="min-w-full table-auto border-collapse">
         <thead>
             <tr>
-                <th>Año</th>
-                <th>Provincia</th>
-                <th>Código de delito</th>
+                <th class="px-4 py-2 border-b">Año</th>
+                <th class="px-4 py-2 border-b">Provincia</th>
+                <th class="px-4 py-2 border-b">Código de delito</th>
+                <th class="px-4 py-2 border-b">Cantidad de hechos</th>
             </tr>
         </thead>
         <tbody>
             {% for estadistica in estadisticas %}
                 <tr>
-                    <td>{{ estadistica.anio }}</td>
-                    <td>{{ estadistica.provincia }}</td>
-                    <td>{{ estadistica.delito }}</td>
+                    <td class="px-4 py-2 border-b">{{ estadistica.anio }}</td>
+                    <td class="px-4 py-2 border-b">{{ estadistica.provincia }}</td>
+                    <td class="px-4 py-2 border-b">{{ estadistica.delito }}</td>
+                    <td class="px-4 py-2 border-b">{{ estadistica.cantidad_hechos }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    {% if estadisticas %}
+    {% if next_page %}
         <button 
             hx-get="/estadisticas-delitos/more?page={{ next_page }}" 
             hx-target="#estadisticas-container" 
             hx-swap="innerHTML"
+            hx-include="#provincia, #delito"
+            class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg mt-4"
         >
             Cargar más
         </button>
