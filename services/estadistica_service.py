@@ -11,15 +11,16 @@ def get_estadisticas(db: Session, provincia_id=None, delito_id=None, anio=None, 
             EstadisticaDelito.anio,
             Provincia.provincia_nombre.label("provincia"),
             Delito.codigo_delito_snic_nombre.label("delito"),
+            EstadisticaDelito.cantidad_hechos,
         )
         .join(Provincia, EstadisticaDelito.provincia_id == Provincia.provincia_id)
         .join(Delito, EstadisticaDelito.codigo_delito_snic_id == Delito.codigo_delito_snic_id)
     )
 
     if provincia_id:
-        query = query.filter(EstadisticaDelito.provincia == provincia_id)
+        query = query.filter(EstadisticaDelito.provincia_id  == provincia_id)
     if delito_id:
-        query = query.filter(EstadisticaDelito.delito == delito_id)
+        query = query.filter(EstadisticaDelito.codigo_delito_snic_id == delito_id)
     if anio:
         query = query.filter(EstadisticaDelito.anio == anio)
 
