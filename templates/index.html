@@ -9,18 +9,7 @@
 </head>
 <body class="bg-gray-100 font-sans antialiased">
 
-    <header class="bg-blue-900 text-white p-6">
-        <div class="container mx-auto flex justify-between items-center">
-            <h1 class="text-3xl font-semibold">Estadísticas Criminales de la República Argentina</h1>
-            <nav>
-                <ul class="flex space-x-6">
-                    <li><a href="#poblaciones" class="hover:text-blue-300">Poblaciones en Provincias</a></li>
-                    <li><a href="#estadisticas-generales" class="hover:text-blue-300">Estadísticas Generales</a></li>
-                    <li><a href="#estadisticas-calculadas" class="hover:text-blue-300">Estadísticas Calculadas</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
+    {% include 'navbar.html' %}
 
     <main class="container mx-auto p-8">
         
@@ -28,7 +17,6 @@
             <div class="text-center">
                 <h2 class="text-2xl font-semibold mb-4">¡Explora las estadísticas de delitos en Argentina!</h2>
                 <p class="mb-4">Descubre cómo se distribuyen los delitos a lo largo del país y conoce las tendencias criminales más recientes.</p>
-                <a href="#estadisticas-generales" class="bg-blue-800 hover:bg-blue-600 text-white py-2 px-6 rounded-lg">Ver Estadísticas Generales</a>
             </div>
         </section>
 
