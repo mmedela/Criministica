@@ -10,6 +10,8 @@ from services.estadistica_service import (
     update_estadistica,
     delete_estadistica
 )
+from services.provincia_service import get_provincias
+from services.delito_service import get_all_delitos_service
 from schemas.estadistica_schema import EstadisticaCreate, EstadisticaResponse, EstadisticaUpdate
 from fastapi.templating import Jinja2Templates
 
@@ -41,14 +43,51 @@ def cargar_estadisticas_parciales(
     request: Request,
     db: Session = Depends(get_db),
     offset: int = Query(0, alias="page", ge=0),
-    limit: int = Query(10, le=100)
+    limit: int = Query(10, le=100),
+    provincia_id: Optional[str] = Query(None),
+    delito_id: Optional[str] = Query(None),
+    anio: Optional[str] = Query(None)          
 ):
-    estadisticas = get_estadisticas(db, limit=limit, offset=offset)  
+    try:
+        provincia_id = int(provincia_id) if provincia_id not in (None, "") else None
+    except ValueError:
+        provincia_id = None
+
+    try:
+        delito_id = int(delito_id) if delito_id not in (None, "") else None
+    except ValueError:
+        delito_id = None
+
+    try:
+        anio = int(anio) if anio not in (None, "") else None
+    except ValueError:
+        anio = None
+
+    estadisticas = get_estadisticas(
+        db,
+        provincia_id=provincia_id, 
+        delito_id=delito_id,       
+        anio=anio,                 
+        limit=limit, 
+        offset=offset
+    )
+    provincias = get_provincias(db)
+    delitos = get_all_delitos_service(db)
+    
     if not estadisticas:
         raise HTTPException(status_code=404, detail="No se encontraron más estadísticas.")
     return templates.TemplateResponse(
-        "estadisticas_partial.html", 
-        {"request": request, "estadisticas": estadisticas, "next_page": offset + limit}
+        "estadisticas_partial.html",
+        {
+            "request": request,
+            "estadisticas": estadisticas,
+            "next_page": offset + limit,
+            "provincias": provincias,
+            "delitos": delitos,
+            "selected_provincia": provincia_id,
+            "selected_delito": delito_id,
+            "selected_anio": anio
+        }
     )
 
 @router.get("/{estadistica_id}", response_model=EstadisticaResponse)
