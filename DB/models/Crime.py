@@ -1,7 +1,7 @@
 from .Base import *
 
 class Crime(Base):
-    __tablename__ = 'delitos'
+    __tablename__ = 'crimes'
 
     crime_code_snic_id = Column(Integer, primary_key=True)
     crime_code_snic_name = Column(String)

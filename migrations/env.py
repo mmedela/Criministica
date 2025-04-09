@@ -8,7 +8,7 @@ from alembic import context
 from DB.models.Base import Base
 from DB.models.Crime import Crime
 from DB.models.EstadisticaDelito import EstadisticaDelito
-from DB.models.Provincia import Provincia
+from DB.models.Province import Province
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

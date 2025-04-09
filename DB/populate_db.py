@@ -1,7 +1,7 @@
 import pandas as pd
 from sqlalchemy.dialects.postgresql import insert
 from init_db import session
-from models.Provincia import Provincia
+from DB.models.Province import Province
 from DB.models.Crime import Crime
 from models.EstadisticaDelito import EstadisticaDelito
 from sqlalchemy.exc import IntegrityError
@@ -17,7 +17,7 @@ PROVINCE_ID_COLUMN
 
 
 def upsert_provincia(row):
-    stmt = insert(Provincia).values(
+    stmt = insert(Province).values(
         provincia_id=row[PROVINCE_ID_COLUMN],
         provincia_nombre=row['provincia_nombre']
     ).on_conflict_do_nothing(index_elements=[PROVINCE_ID_COLUMN])
@@ -57,7 +57,7 @@ def cargar_datos():
         upsert_provincia(row)
         upsert_delito(row)
         
-        provincia = db_session.query(Provincia).get(row[PROVINCE_ID_COLUMN])
+        provincia = db_session.query(Province).get(row[PROVINCE_ID_COLUMN])
         delito = db_session.query(Crime).get(row['codigo_delito_snic_id'])
         
         upsert_estadistica(row, provincia, delito)

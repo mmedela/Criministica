@@ -2,20 +2,20 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from typing import List
 from sqlalchemy.orm import Session
-from DB.models.Provincia import Provincia
+from DB.models.Province import Province
 from schemas.provincia_schema import ProvinciaCreate, ProvinciaUpdate
 from sqlalchemy.exc import IntegrityError
 import csv
 from io import StringIO
 
 def get_provincias(db: Session):
-    return db.query(Provincia).all()
+    return db.query(Province).all()
 
 def get_provincia(db: Session, provincia_id: int):
-    return db.query(Provincia).filter(Provincia.provincia_id == provincia_id).first()
+    return db.query(Province).filter(Province.province_id == provincia_id).first()
 
 def create_provincia(db: Session, provincia: ProvinciaCreate):
-    new_provincia = Provincia(
+    new_provincia = Province(
         provincia_id=provincia.provincia_id, 
         poblacion=provincia.poblacion,  
         provincia_nombre=provincia.provincia_nombre
@@ -30,21 +30,21 @@ def create_provincia(db: Session, provincia: ProvinciaCreate):
         return None
 
 def update_provincia(db: Session, provincia_id: int, provincia_data: ProvinciaUpdate):
-    provincia = db.query(Provincia).filter(Provincia.provincia_id == provincia_id).first()
+    provincia = db.query(Province).filter(Province.province_id == provincia_id).first()
     if not provincia:
         return None
     
-    provincia.provincia_nombre = provincia_data.provincia_nombre
+    provincia.province_name = provincia_data.provincia_nombre
     
     if provincia_data.poblacion is not None:
-        provincia.poblacion = provincia_data.poblacion
+        provincia.population = provincia_data.poblacion
     
     db.commit()
     db.refresh(provincia)
     return provincia
 
 def delete_provincia(db: Session, provincia_id: int):
-    provincia = db.query(Provincia).filter(Provincia.provincia_id == provincia_id).first()
+    provincia = db.query(Province).filter(Province.province_id == provincia_id).first()
     if not provincia:
         return None
     db.delete(provincia)
@@ -64,9 +64,9 @@ def actualizar_poblacion_desde_csv(db: Session, file_content: str):
             poblacion = int(row[1])
         except ValueError:
             continue 
-        provincia = db.query(Provincia).filter(Provincia.provincia_id == provincia_id).first()
+        provincia = db.query(Province).filter(Province.province_id == provincia_id).first()
         if provincia:
-            provincia.poblacion = poblacion
+            provincia.population = poblacion
             actualizadas += 1
 
     db.commit()
@@ -74,7 +74,7 @@ def actualizar_poblacion_desde_csv(db: Session, file_content: str):
 
 def update_provincias_batch(db: Session, updates: List[ProvinciaUpdate]) -> int:
     try:
-        db.bulk_update_mappings(Provincia, [update.dict() for update in updates])
+        db.bulk_update_mappings(Province, [update.dict() for update in updates])
         db.commit()
         return len(updates)
     except Exception as e:
@@ -83,7 +83,7 @@ def update_provincias_batch(db: Session, updates: List[ProvinciaUpdate]) -> int:
 
 def delete_provincias_batch(db: Session, provincia_ids: List[int]) -> int:
     try:
-        stmt = db.delete(Provincia).where(Provincia.provincia_id.in_(provincia_ids))
+        stmt = db.delete(Province).where(Province.province_id.in_(provincia_ids))
         result = db.execute(stmt)
         db.commit()
         if result.rowcount == 0:
@@ -93,8 +93,8 @@ def delete_provincias_batch(db: Session, provincia_ids: List[int]) -> int:
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error deleting provinces: {e}")
 
-def get_provincias_batch(db: Session, provincia_ids: List[int]) -> List[Provincia]:
-    provincias = db.query(Provincia).filter(Provincia.provincia_id.in_(provincia_ids)).all()
+def get_provincias_batch(db: Session, provincia_ids: List[int]) -> List[Province]:
+    provincias = db.query(Province).filter(Province.province_id.in_(provincia_ids)).all()
     if not provincias:
         raise HTTPException(status_code=404, detail="No provinces found")
     return provincias

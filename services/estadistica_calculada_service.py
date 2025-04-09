@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func, case
 from DB.models.EstadisticaDelito import EstadisticaDelito
 from DB.models.Crime import Crime
-from DB.models.Provincia import Provincia
+from DB.models.Province import Province
 
 def calcular_total_delitos(db: Session, provincia_id: int = None, anio: int = None):
     query = db.query(func.sum(EstadisticaDelito.cantidad_hechos))
@@ -23,14 +23,14 @@ def calcular_tasa_criminalidad(db: Session, provincia_id: int):
            EstadisticaDelito.anio,
             func.round(
                 case(
-                    (Provincia.poblacion > 0, (func.sum(EstadisticaDelito.cantidad_hechos) / Provincia.poblacion) * 100000),
+                    (Province.population > 0, (func.sum(EstadisticaDelito.cantidad_hechos) / Province.population) * 100000),
                     else_=0
                 ), 2
             ).label("tasa_criminalidad")
         )
-        .join(Provincia, Provincia.provincia_id == EstadisticaDelito.provincia_id)
+        .join(Province, Province.province_id == EstadisticaDelito.provincia_id)
         .filter(EstadisticaDelito.provincia_id == provincia_id)
-        .group_by(EstadisticaDelito.anio, Provincia.poblacion)
+        .group_by(EstadisticaDelito.anio, Province.population)
         .all()
     )
     return {str(anio): float(tasa) for anio, tasa in resultados}

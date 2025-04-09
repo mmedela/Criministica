@@ -35,10 +35,10 @@ def get_provincias_tabla_poblacion(db: Session = Depends(get_db)):
     provincias = listar_provincias(db)
     html = ""
     for provincia in provincias:
-        poblacion_formateada = f"{provincia.poblacion:,}".replace(",", ".")
+        poblacion_formateada = f"{provincia.population:,}".replace(",", ".")
         html += f"""
         <tr>
-        <td class="px-4 py-2">{provincia.provincia_nombre}</td>
+        <td class="px-4 py-2">{provincia.province_name}</td>
         <td class="px-4 py-2">{poblacion_formateada}</td>
         </tr>
         <tr>

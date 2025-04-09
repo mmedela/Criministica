@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from DB.models.EstadisticaDelito import EstadisticaDelito
-from DB.models.Provincia import Provincia
+from DB.models.Province import Province
 from DB.models.Crime import Crime
 from schemas.estadistica_schema import EstadisticaCreate, EstadisticaUpdate
 
@@ -9,11 +9,11 @@ def get_estadisticas(db: Session, provincia_id=None, delito_id=None, anio=None, 
         db.query(
             EstadisticaDelito.id,
             EstadisticaDelito.anio,
-            Provincia.provincia_nombre.label("provincia"),
+            Province.province_name.label("provincia"),
             Crime.crime_code_snic_name.label("delito"),
             EstadisticaDelito.cantidad_hechos,
         )
-        .join(Provincia, EstadisticaDelito.provincia_id == Provincia.provincia_id)
+        .join(Province, EstadisticaDelito.provincia_id == Province.province_id)
         .join(Crime, EstadisticaDelito.codigo_delito_snic_id == Crime.crime_code_snic_id)
     )
 
