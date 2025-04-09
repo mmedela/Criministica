@@ -9,60 +9,57 @@
 </head>
 <body class="bg-gray-100 font-sans antialiased">
 
-    <!-- Incluir barra de navegación -->
     {% include 'navbar.html' %}
 
     <main class="container mx-auto p-8">
 
         <section class="bg-yellow-500 text-white rounded-lg p-6 mb-8">
             <div class="text-center">
-                <h2 class="text-2xl font-semibold mb-4">Estadísticas Generales de Delitos en Argentina</h2>
-                <p class="mb-4">Consulta los delitos ocurridos por provincia, año y tipo de delito.</p>
+                <h2 class="text-2xl font-semibold mb-4">General Crime Statistics in Argentina</h2>
+                <p class="mb-4">Check the crimes that occurred by province, year and type of crime.</p>
                 <div class="text-center mb-4">
                     <button 
-                        hx-get="/estadisticas-delitos/more?page=0" 
-                        hx-target="#estadisticas-container" 
+                        hx-get="/crimes-statistics/more?page=0" 
+                        hx-target="#statistics-container" 
                         hx-swap="innerHTML" 
                         hx-trigger="click" 
                         hx-on="click: this.style.display='none'" 
                         class="bg-green-600 hover:bg-green-500 text-white py-2 px-6 rounded-lg">
-                        Cargar Estadísticas Generales
+                        Load General Statistics
                     </button>
                 </div>
             </div>
         </section>
 
-        <section id="estadisticas-generales" class="bg-white rounded-lg p-6 shadow-lg mb-8">
-            <h2 class="text-2xl font-semibold mb-4">Tabla de Estadísticas Generales</h2>
+        <section id="general-statistics" class="bg-white rounded-lg p-6 shadow-lg mb-8">
+            <h2 class="text-2xl font-semibold mb-4">General Statistics Table</h2>
             
-            <!-- Contenedor para la tabla de estadísticas -->
-            <div id="estadisticas-container">
+            <div id="statistics-container">
                 <table class="min-w-full table-auto border-collapse">
                     <thead>
                         <tr>
-                            <th class="px-4 py-2 border-b">Año</th>
-                            <th class="px-4 py-2 border-b">Provincia</th>
-                            <th class="px-4 py-2 border-b">Código de delito</th>
-                            <th class="px-4 py-2 border-b">Cantidad de hechos</th>
+                            <th class="px-4 py-2 border-b">year</th>
+                            <th class="px-4 py-2 border-b">Province</th>
+                            <th class="px-4 py-2 border-b">Crime code</th>
+                            <th class="px-4 py-2 border-b">Act quantity</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {% for estadistica in estadisticas %}
+                        {% for statistic in statistics %}
                             <tr>
-                                <td class="px-4 py-2 border-b">{{ estadistica.anio }}</td>
-                                <td class="px-4 py-2 border-b">{{ estadistica.provincia }}</td>
-                                <td class="px-4 py-2 border-b">{{ estadistica.delito }}</td>
-                                <td class="px-4 py-2 border-b">{{ estadistica.cantidad_hechos }}</td>
+                                <td class="px-4 py-2 border-b">{{ statistic.year }}</td>
+                                <td class="px-4 py-2 border-b">{{ statistic.province }}</td>
+                                <td class="px-4 py-2 border-b">{{ statistic.crime }}</td>
+                                <td class="px-4 py-2 border-b">{{ statistic.act_quantity }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
                 </table>
 
-                <!-- Botón para cargar más datos -->
                 {% if next_page %}
                     <button 
-                        hx-get="/estadisticas-generales/more?page={{ next_page }}" 
-                        hx-target="#estadisticas-container" 
+                        hx-get="/general-statistics/more?page={{ next_page }}" 
+                        hx-target="#statistics-container" 
                         hx-swap="innerHTML"
                         class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg mt-4"
                     >

@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from routes.province_routes import router as provincia_router
 from routes.crime_routes import router as delito_router
-from routes.estadistica_routes import router as estadistica_router
+from routes.statistics_routes import router as estadistica_router
 from routes.estadistica_calculada_routes import router as estadistica_calculada_router
 
 app = FastAPI(title="Crime Statistics API", description="API for managing crime statistics in Argentina", version="0.1.3")
@@ -54,9 +54,9 @@ def read_root(request: Request):
 def read_root(request: Request):
     return templates.TemplateResponse("poblaciones_provincias.html", {"request": request})
 
-@app.get("/estadisticas-generales", response_class=HTMLResponse)
+@app.get("/general-statistics", response_class=HTMLResponse)
 def read_root(request: Request):
-    return templates.TemplateResponse("estadisticas_generales.html", {"request": request})
+    return templates.TemplateResponse("general_statistics.html", {"request": request})
 
 @app.get("/version")
 def get_version():

@@ -1,0 +1,93 @@
+<div class="flex space-x-4 mb-4">
+    <div class="flex-1">
+        <label for="province" class="block text-lg font-semibold mb-2">Select a Province</label>
+        <select 
+            id="province" 
+            name="province_id" 
+            class="w-full mt-2 p-2 border border-gray-300 rounded-lg"
+            hx-get="/crimes-statistics/more?page=0" 
+            hx-trigger="change" 
+            hx-target="#statistics-container" 
+            hx-swap="innerHTML"
+            hx-include="#province, #crime"
+        >
+            <option value="">Select a province</option>
+            {% for province in provinces %}
+                <option value="{{province.province_id }}" {% if province.province_id == selected_province %}selected{% endif %}>
+                    {{ province.province_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex-1">
+        <label for="crime" class="block text-lg font-semibold mb-2">Select a Crime</label>
+        <select 
+            id="crime"
+            name="crime_id" 
+            class="w-full mt-2 p-2 border border-gray-300 rounded-lg"
+            hx-get="/crimes-statistics/more?page=0" 
+            hx-trigger="change" 
+            hx-target="#statistics-container" 
+            hx-swap="innerHTML"
+            hx-include="#province, #crime"
+        >
+            <option value="">Select a Crime</option>
+            {% for crime in crimes %}
+                <option value="{{ crime.crime_code_snic_id }}" {% if crime.crime_code_snic_id == selected_crime %}selected{% endif %}>
+                    {{ crime.crime_code_snic_name }}
+                </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="flex-1">
+        <label for="year" class="block text-lg font-semibold mb-2">Año</label>
+        <select 
+            id="year"
+            name="year"
+            hx-get="/crimes-statistics/more?page=0&province_id={{ selected_province or '' }}&crime_id={{ selected_crime or '' }}&year={{ selected_year or '' }}"
+            hx-target="#statistics-container"
+            hx-swap="innerHTML"
+            class="w-full mt-2 p-2 border border-gray-300 rounded-lg"
+        >
+            <option value="">Seleccionar Año</option>
+            {% for y in range(2000, 2024) %}
+                <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</div>
+
+<div id="statistics-container">
+    <table class="min-w-full table-auto border-collapse">
+        <thead>
+            <tr>
+                <th class="px-4 py-2 border-b">Year</th>
+                <th class="px-4 py-2 border-b">Province</th>
+                <th class="px-4 py-2 border-b">Crime code</th>
+                <th class="px-4 py-2 border-b">Act quantity</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for statistic in statistics %}
+                <tr>
+                    <td class="px-4 py-2 border-b">{{ statistic.year }}</td>
+                    <td class="px-4 py-2 border-b">{{ statistic.province }}</td>
+                    <td class="px-4 py-2 border-b">{{ statistic.crime }}</td>
+                    <td class="px-4 py-2 border-b">{{ statistic.act_quantity }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    {% if next_page %}
+        <button 
+            hx-get="/crimes-statistics/more?page={{ next_page }}" 
+            hx-target="#statistics-container" 
+            hx-swap="innerHTML"
+            hx-include="#province, #crime"
+            class="bg-blue-600 hover:bg-blue-500 text-white py-2 px-4 rounded-lg mt-4"
+        >
+            Cargar más
+        </button>
+    {% endif %}
+</div>
