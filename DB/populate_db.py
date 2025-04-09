@@ -13,62 +13,73 @@ db_session = session()
 
 PROVINCE_ID_COLUMN = 'provincia_id'
 PROVINCE_NAME_COLUMN = 'provincia_nombre'
-PROVINCE_ID_COLUMN
+CRIME_CODE_SNIC_ID = 'codigo_delito_snic_id'
+CRIME_CODE_SNIC_NAME = 'codigo_delito_snic_nombre'
+YEAR  = 'anio'
+ACT_QUANTITY  = 'cantidad_hechos'
+VICTIM_QUANTITY  = 'cantidad_victimas'
+MALE_VICTIMS_QUANTITY  = 'cantidad_victimas_masc'
+FEMALE_VICTIMS_QUANTITY  = 'cantidad_victimas_fem'
+VICTIM_QUANTITY_SD  = 'cantidad_victimas_sd'
+ACT_RATE  = 'tasa_hechos'
+VICTIM_RATE  = 'tasa_victimas'
+MALE_VICTIMS_RATE  = 'tasa_victimas_masc'
+FEMALE_VICTIMS_RATE  = 'tasa_victimas_fem'
 
 
-def upsert_provincia(row):
+def upsert_provinces(row):
     stmt = insert(Province).values(
-        provincia_id=row[PROVINCE_ID_COLUMN],
-        provincia_nombre=row['provincia_nombre']
+        province_id=row[PROVINCE_ID_COLUMN],
+        province_name=row[PROVINCE_NAME_COLUMN]
     ).on_conflict_do_nothing(index_elements=[PROVINCE_ID_COLUMN])
     db_session.execute(stmt)
 
-def upsert_delito(row):
+def upsert_crimes(row):
     stmt = insert(Crime).values(
-        codigo_delito_snic_id=row['codigo_delito_snic_id'],
-        codigo_delito_snic_nombre=row['codigo_delito_snic_nombre']
-    ).on_conflict_do_nothing(index_elements=['codigo_delito_snic_id'])
+        crime_code_snic_id=row[CRIME_CODE_SNIC_NAME],
+        crime_code_snic_name=row[CRIME_CODE_SNIC_NAME]
+    ).on_conflict_do_nothing(index_elements=[CRIME_CODE_SNIC_NAME])
     db_session.execute(stmt)
 
-def upsert_estadistica(row, provincia, delito):
+def upsert_statistics(row, province, crime):
     def to_number(val):
         return val if pd.notnull(val) else None
 
     stmt = insert(CrimeStatistics).values(
-        provincia_id=provincia.provincia_id,
-        codigo_delito_snic_id=delito.codigo_delito_snic_id,
-        anio=row['anio'],
-        cantidad_hechos=to_number(row['cantidad_hechos']),
-        cantidad_victimas=to_number(row['cantidad_victimas']),
-        cantidad_victimas_masc=to_number(row['cantidad_victimas_masc']),
-        cantidad_victimas_fem=to_number(row['cantidad_victimas_fem']),
-        cantidad_victimas_sd=to_number(row['cantidad_victimas_sd']),
-        tasa_hechos=to_number(row['tasa_hechos']),
-        tasa_victimas=to_number(row['tasa_victimas']),
-        tasa_victimas_masc=to_number(row['tasa_victimas_masc']),
-        tasa_victimas_fem=to_number(row['tasa_victimas_fem'])
+        province_id=province.provincia_id,
+        crime_code_snic_id=crime.crime_code_snic_id,
+        year=row[YEAR],
+        act_quantity=to_number(row[ACT_QUANTITY]),
+        victim_quantity=to_number(row[VICTIM_QUANTITY]),
+        male_victims_quantity=to_number(row[MALE_VICTIMS_QUANTITY]),
+        female_victims_quantity=to_number(row[FEMALE_VICTIMS_QUANTITY]),
+        victim_quantity_sd=to_number(row[VICTIM_QUANTITY_SD]),
+        act_rate=to_number(row[ACT_RATE]),
+        victim_rate=to_number(row[VICTIM_RATE]),
+        male_victims_rate=to_number(row[MALE_VICTIMS_RATE]),
+        female_victims_rate=to_number(row[FEMALE_VICTIMS_RATE])
     ).on_conflict_do_nothing(
-        index_elements=[PROVINCE_ID_COLUMN, 'codigo_delito_snic_id', 'anio']
+        index_elements=[PROVINCE_ID_COLUMN, CRIME_CODE_SNIC_ID, YEAR]
     )
     db_session.execute(stmt)
 
 def cargar_datos():
     for _, row in df.iterrows():
-        upsert_provincia(row)
-        upsert_delito(row)
+        upsert_provinces(row)
+        upsert_crimes(row)
         
-        provincia = db_session.query(Province).get(row[PROVINCE_ID_COLUMN])
-        delito = db_session.query(Crime).get(row['codigo_delito_snic_id'])
+        province = db_session.query(Province).get(row[PROVINCE_ID_COLUMN])
+        crime = db_session.query(Crime).get(row[CRIME_CODE_SNIC_ID])
         
-        upsert_estadistica(row, provincia, delito)
+        upsert_statistics(row, province, crime)
 
     try:
         db_session.flush()  
         db_session.commit()
-        print("Commit exitoso.")
+        print("successful commit.")
     except IntegrityError as e:
         db_session.rollback()
-        print(f"Error de integridad al agregar datos: {e}")
+        print(f"Integrity error trying to insert row: {e}")
     finally:
         db_session.close()
 
