@@ -7,7 +7,7 @@ from alembic import context
 
 from DB.models.Base import Base
 from DB.models.Crime import Crime
-from DB.models.EstadisticaDelito import CrimeStatistics
+from DB.models.CrimeStatistics import CrimeStatistics
 from DB.models.Province import Province
 
 # this is the Alembic Config object, which provides

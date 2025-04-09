@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import insert
 from init_db import session
 from DB.models.Province import Province
 from DB.models.Crime import Crime
-from models.EstadisticaDelito import CrimeStatistics
+from DB.models.CrimeStatistics import CrimeStatistics
 from sqlalchemy.exc import IntegrityError
 from config import CSV_ROUTE
 
