@@ -1,6 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func, case
-from DB.models.EstadisticaDelito import CrimeStatistics
+from DB.models.CrimeStatistics import CrimeStatistics
 from DB.models.Crime import Crime
 from DB.models.Province import Province
 
