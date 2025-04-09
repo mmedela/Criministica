@@ -2,8 +2,8 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from routes.provincia_routes import router as provincia_router
-from routes.delito_routes import router as delito_router
+from routes.province_routes import router as provincia_router
+from routes.crime_routes import router as delito_router
 from routes.estadistica_routes import router as estadistica_router
 from routes.estadistica_calculada_routes import router as estadistica_calculada_router
 
