@@ -2,17 +2,17 @@ from fastapi import HTTPException
 from sqlalchemy.exc import SQLAlchemyError
 from typing import List
 from sqlalchemy.orm import Session
-from DB.models.Delito import Delito
+from DB.models.Crime import Crime
 from schemas.delito_schema import DelitoCreate, DelitoUpdate
 
 def get_all_delitos_service(db: Session):
-    return db.query(Delito).all()
+    return db.query(Crime).all()
 
 def get_delito_by_id_service(db: Session, delito_id: int):
-    return db.query(Delito).filter(Delito.codigo_delito_snic_id == delito_id).first()
+    return db.query(Crime).filter(Crime.crime_code_snic_id == delito_id).first()
 
 def create_delito_service(db: Session, delito_data: DelitoCreate):
-    new_delito = Delito(**delito_data.dict())
+    new_delito = Crime(**delito_data.dict())
     db.add(new_delito)
     db.commit()
     db.refresh(new_delito)
@@ -36,7 +36,7 @@ def delete_delito_service(db: Session, delito_id: int):
 
 def create_delitos_service(db: Session, delitos: List[DelitoCreate]):
     try:
-        db.bulk_insert_mappings(Delito, [d.dict() for d in delitos])
+        db.bulk_insert_mappings(Crime, [d.dict() for d in delitos])
         db.commit()
         return len(delitos)
     except SQLAlchemyError:
@@ -45,7 +45,7 @@ def create_delitos_service(db: Session, delitos: List[DelitoCreate]):
                     
 def update_delitos_service(db: Session, updates: List[DelitoUpdate]):
     try:
-        db.bulk_update_mappings(Delito, [u.dict() for u in updates])
+        db.bulk_update_mappings(Crime, [u.dict() for u in updates])
         db.commit()
         return len(updates)
     except SQLAlchemyError:
@@ -54,7 +54,7 @@ def update_delitos_service(db: Session, updates: List[DelitoUpdate]):
     
 def delete_delitos_service(db: Session, delito_ids: List[int]):
     try:
-        stmt = db.delete(Delito).where(Delito.codigo_delito_snic_id.in_(delito_ids))
+        stmt = db.delete(Crime).where(Crime.crime_code_snic_id.in_(delito_ids))
         result = db.execute(stmt)
         db.commit()
         return result.rowcount
@@ -64,5 +64,5 @@ def delete_delitos_service(db: Session, delito_ids: List[int]):
 
 
 def get_batch_delitos_service(db: Session, delito_ids: List[int]):
-    return db.query(Delito).filter(Delito.codigo_delito_snic_id.in_(delito_ids)).all()
+    return db.query(Crime).filter(Crime.crime_code_snic_id.in_(delito_ids)).all()
     

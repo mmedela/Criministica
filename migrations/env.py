@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from DB.models.Base import Base
-from DB.models.Delito import Delito
+from DB.models.Crime import Crime
 from DB.models.EstadisticaDelito import EstadisticaDelito
 from DB.models.Provincia import Provincia
 

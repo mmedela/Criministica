@@ -2,7 +2,7 @@ import pandas as pd
 from sqlalchemy.dialects.postgresql import insert
 from init_db import session
 from models.Provincia import Provincia
-from models.Delito import Delito
+from DB.models.Crime import Crime
 from models.EstadisticaDelito import EstadisticaDelito
 from sqlalchemy.exc import IntegrityError
 from config import CSV_ROUTE
@@ -11,15 +11,20 @@ df = pd.read_csv(CSV_ROUTE, na_values=['', 'NULL'])
 
 db_session = session()
 
+PROVINCE_ID_COLUMN = 'provincia_id'
+PROVINCE_NAME_COLUMN = 'provincia_nombre'
+PROVINCE_ID_COLUMN
+
+
 def upsert_provincia(row):
     stmt = insert(Provincia).values(
-        provincia_id=row['provincia_id'],
+        provincia_id=row[PROVINCE_ID_COLUMN],
         provincia_nombre=row['provincia_nombre']
-    ).on_conflict_do_nothing(index_elements=['provincia_id'])
+    ).on_conflict_do_nothing(index_elements=[PROVINCE_ID_COLUMN])
     db_session.execute(stmt)
 
 def upsert_delito(row):
-    stmt = insert(Delito).values(
+    stmt = insert(Crime).values(
         codigo_delito_snic_id=row['codigo_delito_snic_id'],
         codigo_delito_snic_nombre=row['codigo_delito_snic_nombre']
     ).on_conflict_do_nothing(index_elements=['codigo_delito_snic_id'])
@@ -43,7 +48,7 @@ def upsert_estadistica(row, provincia, delito):
         tasa_victimas_masc=to_number(row['tasa_victimas_masc']),
         tasa_victimas_fem=to_number(row['tasa_victimas_fem'])
     ).on_conflict_do_nothing(
-        index_elements=['provincia_id', 'codigo_delito_snic_id', 'anio']
+        index_elements=[PROVINCE_ID_COLUMN, 'codigo_delito_snic_id', 'anio']
     )
     db_session.execute(stmt)
 
@@ -52,8 +57,8 @@ def cargar_datos():
         upsert_provincia(row)
         upsert_delito(row)
         
-        provincia = db_session.query(Provincia).get(row['provincia_id'])
-        delito = db_session.query(Delito).get(row['codigo_delito_snic_id'])
+        provincia = db_session.query(Provincia).get(row[PROVINCE_ID_COLUMN])
+        delito = db_session.query(Crime).get(row['codigo_delito_snic_id'])
         
         upsert_estadistica(row, provincia, delito)
 

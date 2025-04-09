@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import delete
 from sqlalchemy.orm import Session
 from DB.init_db import session
-from DB.models.Delito import Delito
+from DB.models.Crime import Crime
 from services.delito_service import (
     get_all_delitos_service,
     get_delito_by_id_service,

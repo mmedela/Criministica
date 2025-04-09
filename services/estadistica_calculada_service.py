@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from sqlalchemy import func, case
 from DB.models.EstadisticaDelito import EstadisticaDelito
-from DB.models.Delito import Delito
+from DB.models.Crime import Crime
 from DB.models.Provincia import Provincia
 
 def calcular_total_delitos(db: Session, provincia_id: int = None, anio: int = None):
