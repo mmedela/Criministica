@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from DB.models.EstadisticaDelito import EstadisticaDelito
+from DB.models.EstadisticaDelito import CrimeStatistics
 from DB.models.Province import Province
 from DB.models.Crime import Crime
 from schemas.estadistica_schema import EstadisticaCreate, EstadisticaUpdate
@@ -7,30 +7,30 @@ from schemas.estadistica_schema import EstadisticaCreate, EstadisticaUpdate
 def get_estadisticas(db: Session, provincia_id=None, delito_id=None, anio=None, limit=None, offset=0):
     query = (
         db.query(
-            EstadisticaDelito.id,
-            EstadisticaDelito.anio,
+            CrimeStatistics.id,
+            CrimeStatistics.year,
             Province.province_name.label("provincia"),
             Crime.crime_code_snic_name.label("delito"),
-            EstadisticaDelito.cantidad_hechos,
+            CrimeStatistics.act_quantity,
         )
-        .join(Province, EstadisticaDelito.provincia_id == Province.province_id)
-        .join(Crime, EstadisticaDelito.codigo_delito_snic_id == Crime.crime_code_snic_id)
+        .join(Province, CrimeStatistics.province_id == Province.province_id)
+        .join(Crime, CrimeStatistics.crime_code_snic_id == Crime.crime_code_snic_id)
     )
 
     if provincia_id:
-        query = query.filter(EstadisticaDelito.provincia_id  == provincia_id)
+        query = query.filter(CrimeStatistics.province_id  == provincia_id)
     if delito_id:
-        query = query.filter(EstadisticaDelito.codigo_delito_snic_id == delito_id)
+        query = query.filter(CrimeStatistics.crime_code_snic_id == delito_id)
     if anio:
-        query = query.filter(EstadisticaDelito.anio == anio)
+        query = query.filter(CrimeStatistics.year == anio)
 
     return query.offset(offset).limit(limit).all()
 
 def get_estadistica_by_id(db: Session, estadistica_id: int):
-    return db.query(EstadisticaDelito).filter(EstadisticaDelito.id == estadistica_id).first()
+    return db.query(CrimeStatistics).filter(CrimeStatistics.id == estadistica_id).first()
 
 def create_estadistica(db: Session, estadistica_data: EstadisticaCreate):
-    new_estadistica = EstadisticaDelito(**estadistica_data.dict())
+    new_estadistica = CrimeStatistics(**estadistica_data.dict())
     db.add(new_estadistica)
     db.commit()
     db.refresh(new_estadistica)

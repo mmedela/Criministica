@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import insert
 from init_db import session
 from DB.models.Province import Province
 from DB.models.Crime import Crime
-from models.EstadisticaDelito import EstadisticaDelito
+from models.EstadisticaDelito import CrimeStatistics
 from sqlalchemy.exc import IntegrityError
 from config import CSV_ROUTE
 
@@ -34,7 +34,7 @@ def upsert_estadistica(row, provincia, delito):
     def to_number(val):
         return val if pd.notnull(val) else None
 
-    stmt = insert(EstadisticaDelito).values(
+    stmt = insert(CrimeStatistics).values(
         provincia_id=provincia.provincia_id,
         codigo_delito_snic_id=delito.codigo_delito_snic_id,
         anio=row['anio'],

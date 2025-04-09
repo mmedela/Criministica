@@ -8,7 +8,7 @@ class Province(Base):
     population = Column(Integer, nullable=True)
 
     # Relación con estadísticas de delitos
-    estadisticas = relationship('EstadisticaDelito', back_populates='province')
+    statistics = relationship('EstadisticaDelito', back_populates='provinces')
 
     def __repr__(self):
         return f"<Province(id={self.province_id}, name={self.province_name}, population={self.population})>"
