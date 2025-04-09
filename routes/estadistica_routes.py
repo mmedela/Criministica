@@ -11,7 +11,7 @@ from services.estadistica_service import (
     delete_estadistica
 )
 from services.provincia_service import get_provincias
-from services.delito_service import get_all_delitos_service
+from services.crimes_service import get_all_crimes_service
 from schemas.statistics_schema import StatisticsCreate, StatisticsResponse, StatisticsUpdate
 from fastapi.templating import Jinja2Templates
 
@@ -72,7 +72,7 @@ def cargar_estadisticas_parciales(
         offset=offset
     )
     provincias = get_provincias(db)
-    delitos = get_all_delitos_service(db)
+    delitos = get_all_crimes_service(db)
     
     if not estadisticas:
         raise HTTPException(status_code=404, detail="No se encontraron más estadísticas.")
