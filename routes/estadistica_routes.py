@@ -3,12 +3,12 @@ from fastapi.responses import HTMLResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
 from DB.init_db import session
-from services.estadistica_service import (
-    get_estadisticas,
-    get_estadistica_by_id,
-    create_estadistica,
-    update_estadistica,
-    delete_estadistica
+from services.statistic_service import (
+    get_statistics,
+    get_statistic_by_id,
+    create_statistic,
+    update_statistic,
+    delete_statistics
 )
 from services.province_service import get_provinces_service
 from services.crimes_service import get_all_crimes_service
@@ -34,7 +34,7 @@ def listar_estadisticas(
     delito_id: Optional[int] = Query(None),
     anio: Optional[int] = Query(None)
 ):
-    estadisticas = get_estadisticas(db, provincia_id, delito_id, anio)
+    estadisticas = get_statistics(db, provincia_id, delito_id, anio)
     return [StatisticsResponse.model_validate(e, from_attributes=True) for e in estadisticas]
 
 
@@ -63,11 +63,11 @@ def cargar_estadisticas_parciales(
     except ValueError:
         anio = None
 
-    estadisticas = get_estadisticas(
+    estadisticas = get_statistics(
         db,
-        provincia_id=provincia_id, 
-        delito_id=delito_id,       
-        anio=anio,                 
+        province_id=provincia_id, 
+        crime_id=delito_id,       
+        year=anio,                 
         limit=limit, 
         offset=offset
     )
@@ -92,20 +92,20 @@ def cargar_estadisticas_parciales(
 
 @router.get("/{estadistica_id}", response_model=StatisticsResponse)
 def obtener_estadistica(estadistica_id: int, db: Session = Depends(get_db)):
-    estadistica = get_estadistica_by_id(db, estadistica_id)
+    estadistica = get_statistic_by_id(db, estadistica_id)
     if not estadistica:
         raise HTTPException(status_code=404, detail="Estadística no encontrada")
     return estadistica
 
 @router.post("/", response_model=StatisticsResponse)
 def agregar_estadistica(estadistica: StatisticsCreate, db: Session = Depends(get_db)):
-    return create_estadistica(db, estadistica)
+    return create_statistic(db, estadistica)
 
 @router.put("/{estadistica_id}", response_model=StatisticsResponse)
 def modificar_estadistica(estadistica_id: int, estadistica: StatisticsUpdate, db: Session = Depends(get_db)):
-    return update_estadistica(db, estadistica_id, estadistica)
+    return update_statistic(db, estadistica_id, estadistica)
 
 @router.delete("/{estadistica_id}")
 def eliminar_estadistica(estadistica_id: int, db: Session = Depends(get_db)):
-    delete_estadistica(db, estadistica_id)
+    delete_statistics(db, estadistica_id)
     return {"message": "Estadística eliminada exitosamente"}
