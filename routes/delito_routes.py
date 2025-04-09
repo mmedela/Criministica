@@ -14,7 +14,7 @@ from services.delito_service import (
     update_delitos_service,
     create_delitos_service
 )
-from schemas.delito_schema import DelitoCreate, DelitoResponse, DelitoUpdate
+from schemas.crime_schema import CrimeCreate, CrimeResponse, CrimeUpdate
 from typing import List
 
 router = APIRouter(prefix="/delitos", tags=["Delitos"])
@@ -26,23 +26,23 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/", response_model=List[DelitoResponse])
+@router.get("/", response_model=List[CrimeResponse])
 def listar_delitos(db: Session = Depends(get_db)):
     return get_all_delitos_service(db)
 
-@router.get("/{delito_id}", response_model=DelitoResponse)
+@router.get("/{delito_id}", response_model=CrimeResponse)
 def obtener_delito(delito_id: int, db: Session = Depends(get_db)):
     delito = get_delito_by_id_service(db, delito_id)
     if not delito:
         raise HTTPException(status_code=404, detail="Delito no encontrado")
     return delito
 
-@router.post("/", response_model=DelitoResponse)
-def agregar_delito(delito: DelitoCreate, db: Session = Depends(get_db)):
+@router.post("/", response_model=CrimeResponse)
+def agregar_delito(delito: CrimeCreate, db: Session = Depends(get_db)):
     return create_delito_service(db, delito)
 
-@router.put("/{delito_id}", response_model=DelitoResponse)
-def modificar_delito(delito_id: int, delito: DelitoUpdate, db: Session = Depends(get_db)):
+@router.put("/{delito_id}", response_model=CrimeResponse)
+def modificar_delito(delito_id: int, delito: CrimeUpdate, db: Session = Depends(get_db)):
     return update_delito_service(db, delito_id, delito)
 
 @router.delete("/{delito_id}")
@@ -51,12 +51,12 @@ def eliminar_delito(delito_id: int, db: Session = Depends(get_db)):
     return {"message": "Delito eliminado exitosamente"}
 
 @router.post("/batch", status_code=201)
-def create_delitos(delitos: List[DelitoCreate], db: Session = Depends(get_db)):
+def create_delitos(delitos: List[CrimeCreate], db: Session = Depends(get_db)):
     delitos = create_delitos_service(db, delitos)
     return {"message": f"{delitos} delitos added successfully"}
 
 @router.put("/batch")
-def update_delitos(updates: List[DelitoUpdate], db: Session = Depends(get_db)):
+def update_delitos(updates: List[CrimeUpdate], db: Session = Depends(get_db)):
     result = update_delitos_service(db, updates)
     return {"message": f"{result} delitos updated successfully"}
 
@@ -67,7 +67,7 @@ def delete_delitos_service(delito_ids: List[int], db: Session = Depends(get_db))
         raise HTTPException(status_code=404, detail="No delitos found to delete")
     return {"message": f"{rows_deleted} delitos deleted successfully"}
 
-@router.get("/batch", response_model=List[DelitoCreate])
+@router.get("/batch", response_model=List[CrimeCreate])
 def get_batch_delitos_service(delito_ids: List[int] = Query(...), db: Session = Depends(get_db)):
     delitos = get_batch_delitos_service(delito_ids, db)
     if not delitos:

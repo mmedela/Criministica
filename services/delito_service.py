@@ -3,7 +3,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from typing import List
 from sqlalchemy.orm import Session
 from DB.models.Crime import Crime
-from schemas.delito_schema import DelitoCreate, DelitoUpdate
+from schemas.crime_schema import CrimeCreate, CrimeUpdate
 
 def get_all_delitos_service(db: Session):
     return db.query(Crime).all()
@@ -11,14 +11,14 @@ def get_all_delitos_service(db: Session):
 def get_delito_by_id_service(db: Session, delito_id: int):
     return db.query(Crime).filter(Crime.crime_code_snic_id == delito_id).first()
 
-def create_delito_service(db: Session, delito_data: DelitoCreate):
+def create_delito_service(db: Session, delito_data: CrimeCreate):
     new_delito = Crime(**delito_data.dict())
     db.add(new_delito)
     db.commit()
     db.refresh(new_delito)
     return new_delito
 
-def update_delito_service(db: Session, delito_id: int, delito_data: DelitoUpdate):
+def update_delito_service(db: Session, delito_id: int, delito_data: CrimeUpdate):
     delito = get_delito_by_id_service(db, delito_id)
     if delito:
         for key, value in delito_data.dict(exclude_unset=True).items():
@@ -34,7 +34,7 @@ def delete_delito_service(db: Session, delito_id: int):
         db.commit()
     return delito
 
-def create_delitos_service(db: Session, delitos: List[DelitoCreate]):
+def create_delitos_service(db: Session, delitos: List[CrimeCreate]):
     try:
         db.bulk_insert_mappings(Crime, [d.dict() for d in delitos])
         db.commit()
@@ -43,7 +43,7 @@ def create_delitos_service(db: Session, delitos: List[DelitoCreate]):
         db.rollback()
         raise HTTPException(status_code=500, detail="Error inserting delitos")
                     
-def update_delitos_service(db: Session, updates: List[DelitoUpdate]):
+def update_delitos_service(db: Session, updates: List[CrimeUpdate]):
     try:
         db.bulk_update_mappings(Crime, [u.dict() for u in updates])
         db.commit()
