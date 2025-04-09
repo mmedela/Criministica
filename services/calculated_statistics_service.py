@@ -4,21 +4,20 @@ from DB.models.CrimeStatistics import CrimeStatistics
 from DB.models.Crime import Crime
 from DB.models.Province import Province
 
-def calcular_total_delitos(db: Session, provincia_id: int = None, anio: int = None):
+def calculate_total_crimes(db: Session, province_id: int = None, year: int = None):
     query = db.query(func.sum(CrimeStatistics.act_quantity))
     
-    if provincia_id:
-        query = query.filter(CrimeStatistics.province_id == provincia_id)
+    if province_id:
+        query = query.filter(CrimeStatistics.province_id == province_id)
     
-    if anio:
-        query = query.filter(CrimeStatistics.year == anio)
-    
-    total_delitos = query.scalar() or 0
-    return total_delitos
+    if year:
+        query = query.filter(CrimeStatistics.year == year)
+        
+    return query.scalar() or 0
 
 
-def calcular_tasa_criminalidad(db: Session, provincia_id: int):
-    resultados = (
+def calculate_crime_rate(db: Session, province_id: int):
+    rates = (
         db.query(
            CrimeStatistics.year,
             func.round(
@@ -26,14 +25,14 @@ def calcular_tasa_criminalidad(db: Session, provincia_id: int):
                     (Province.population > 0, (func.sum(CrimeStatistics.act_quantity) / Province.population) * 100000),
                     else_=0
                 ), 2
-            ).label("tasa_criminalidad")
+            ).label("crime_rate")
         )
         .join(Province, Province.province_id == CrimeStatistics.province_id)
-        .filter(CrimeStatistics.province_id == provincia_id)
+        .filter(CrimeStatistics.province_id == province_id)
         .group_by(CrimeStatistics.year, Province.population)
         .all()
     )
-    return {str(anio): float(tasa) for anio, tasa in resultados}
+    return {str(year): float(rate) for year, rate in rates}
 
 
 def calcular_porcentaje_delitos_provincia(db: Session, provincia_id: int):
