@@ -10,7 +10,7 @@ from services.estadistica_service import (
     update_estadistica,
     delete_estadistica
 )
-from services.provincia_service import get_provincias
+from services.province_service import get_provinces_service
 from services.crimes_service import get_all_crimes_service
 from schemas.statistics_schema import StatisticsCreate, StatisticsResponse, StatisticsUpdate
 from fastapi.templating import Jinja2Templates
@@ -71,7 +71,7 @@ def cargar_estadisticas_parciales(
         limit=limit, 
         offset=offset
     )
-    provincias = get_provincias(db)
+    provincias = get_provinces_service(db)
     delitos = get_all_crimes_service(db)
     
     if not estadisticas:
