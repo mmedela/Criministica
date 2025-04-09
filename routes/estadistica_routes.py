@@ -12,7 +12,7 @@ from services.estadistica_service import (
 )
 from services.provincia_service import get_provincias
 from services.delito_service import get_all_delitos_service
-from schemas.estadistica_schema import EstadisticaCreate, EstadisticaResponse, EstadisticaUpdate
+from schemas.statistics_schema import StatisticsCreate, StatisticsResponse, StatisticsUpdate
 from fastapi.templating import Jinja2Templates
 
 router = APIRouter(prefix="/estadisticas-delitos", tags=["Estadísticas de Delitos"])
@@ -27,7 +27,7 @@ def get_db():
     finally:
         db.close()
 
-@router.get("/", response_model=List[EstadisticaResponse])
+@router.get("/", response_model=List[StatisticsResponse])
 def listar_estadisticas(
     db: Session = Depends(get_db),
     provincia_id: Optional[int] = Query(None),
@@ -35,7 +35,7 @@ def listar_estadisticas(
     anio: Optional[int] = Query(None)
 ):
     estadisticas = get_estadisticas(db, provincia_id, delito_id, anio)
-    return [EstadisticaResponse.model_validate(e, from_attributes=True) for e in estadisticas]
+    return [StatisticsResponse.model_validate(e, from_attributes=True) for e in estadisticas]
 
 
 @router.get("/more", response_class=HTMLResponse)
@@ -90,19 +90,19 @@ def cargar_estadisticas_parciales(
         }
     )
 
-@router.get("/{estadistica_id}", response_model=EstadisticaResponse)
+@router.get("/{estadistica_id}", response_model=StatisticsResponse)
 def obtener_estadistica(estadistica_id: int, db: Session = Depends(get_db)):
     estadistica = get_estadistica_by_id(db, estadistica_id)
     if not estadistica:
         raise HTTPException(status_code=404, detail="Estadística no encontrada")
     return estadistica
 
-@router.post("/", response_model=EstadisticaResponse)
-def agregar_estadistica(estadistica: EstadisticaCreate, db: Session = Depends(get_db)):
+@router.post("/", response_model=StatisticsResponse)
+def agregar_estadistica(estadistica: StatisticsCreate, db: Session = Depends(get_db)):
     return create_estadistica(db, estadistica)
 
-@router.put("/{estadistica_id}", response_model=EstadisticaResponse)
-def modificar_estadistica(estadistica_id: int, estadistica: EstadisticaUpdate, db: Session = Depends(get_db)):
+@router.put("/{estadistica_id}", response_model=StatisticsResponse)
+def modificar_estadistica(estadistica_id: int, estadistica: StatisticsUpdate, db: Session = Depends(get_db)):
     return update_estadistica(db, estadistica_id, estadistica)
 
 @router.delete("/{estadistica_id}")

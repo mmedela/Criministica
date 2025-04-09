@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from DB.models.EstadisticaDelito import CrimeStatistics
+from DB.models.CrimeStatistics import CrimeStatistics
 from DB.models.Province import Province
 from DB.models.Crime import Crime
-from schemas.estadistica_schema import EstadisticaCreate, EstadisticaUpdate
+from schemas.statistics_schema import StatisticsCreate, StatisticsUpdate
 
 def get_estadisticas(db: Session, provincia_id=None, delito_id=None, anio=None, limit=None, offset=0):
     query = (
@@ -29,14 +29,14 @@ def get_estadisticas(db: Session, provincia_id=None, delito_id=None, anio=None, 
 def get_estadistica_by_id(db: Session, estadistica_id: int):
     return db.query(CrimeStatistics).filter(CrimeStatistics.id == estadistica_id).first()
 
-def create_estadistica(db: Session, estadistica_data: EstadisticaCreate):
+def create_estadistica(db: Session, estadistica_data: StatisticsCreate):
     new_estadistica = CrimeStatistics(**estadistica_data.dict())
     db.add(new_estadistica)
     db.commit()
     db.refresh(new_estadistica)
     return new_estadistica
 
-def update_estadistica(db: Session, estadistica_id: int, estadistica_data: EstadisticaUpdate):
+def update_estadistica(db: Session, estadistica_id: int, estadistica_data: StatisticsUpdate):
     estadistica = get_estadistica_by_id(db, estadistica_id)
     if estadistica:
         for key, value in estadistica_data.dict(exclude_unset=True).items():
