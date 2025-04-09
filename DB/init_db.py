@@ -5,4 +5,4 @@ Base.metadata.create_all(engine)
 
 session = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-print("Base de datos y tablas creadas con éxito.")
+print("Database and tables created successfully.")
