@@ -1,2 +1,2 @@
-DATABASE_URL = "postgresql://postgres:root@localhost/delitos_db"
+DATABASE_URL = "postgresql://postgres:root@localhost/crimes_db"
 CSV_ROUTE = "snic-provincias.csv"

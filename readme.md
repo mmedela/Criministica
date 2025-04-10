@@ -1,120 +1,180 @@
 # Crime Statistics API
 
-Esta es una aplicación backend desarrollada con FastAPI para gestionar estadísticas de delitos en Argentina. La aplicación utiliza SQLAlchemy como ORM para interactuar con una base de datos PostgreSQL, Alembic para gestionar migraciones y un frontend sencillo basado en HTMX.
+This is a backend application developed with FastAPI to manage crime statistics in Argentina. The application uses SQLAlchemy as an ORM to interact with a PostgreSQL database, Alembic for managing migrations, and a simple frontend based on HTMX.
 
 ---
 
-## Requisitos
+## Requirements
 
 - **Python 3.11** (o superior)
-- **PostgreSQL** (asegúrate de tenerlo instalado y en ejecución)
-- **Git** (para clonar el repositorio)
-- Opcional: **Docker** y **docker-compose** para correr la aplicación en contenedores
+- **PostgreSQL** (make sure it is installed and running)
+- **Git** (to clone the repository)
 
 ---
 
-## Instalación
+## Installation
 
-### 1. Clonar el repositorio
+### 1. Clone the repository
 
 ```bash
-git clone https://github.com/tu_usuario/tu_repositorio.git
-cd tu_repositorio
+git clonehttps://github.com/mmedela/Criministica.git
+cd Criministica
 ```
-### 2. Crear y activar un ambiente virtual
-#### En Linux/Mac:
+### 2. Create and activate a virtual environment
+#### Linux/Mac:
 
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 ```
-#### En Windows (CMD):
+#### Windows (CMD):
 
 ```cmd
 python -m venv venv
 venv\Scripts\activate
 ```
 
-#### En Windows (PowerShell):
+#### Windows (PowerShell):
 
 ```powershell
 python -m venv venv
 .\venv\Scripts\Activate.ps1
 ```
 
-### 3.  Instalar las dependencias
+### 3. Install dependencies
 
-Actualiza pip y luego instala las dependencias desde el archivo requirements.txt:
+Update pip and then install the dependencies from the requirements.txt file:
 
 ```bash
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-## Configuración de la Base de Datos
+## Database Configuration
 
-## 1. Instalar PostgreSQL
+## 1. Install PostgreSQL
 
-- linux: Usa el gestor de paquetes de tu distribución. Por ejemplo, en Ubuntu:
+- linux: Linux: Use your distribution’s package manager. For example, on Ubuntu:
 
 ```bash
 sudo apt-get update
 sudo apt-get install postgresql postgresql-contrib
 ```
-- Windows: Descarga e instala PostgreSQL desde https://www.postgresql.org/download/windows/
+- Windows: Download and install PostgreSQL from https://www.postgresql.org/download/windows/
 
-## 2. Configurar la Base de Datos
+## 2. Configure the Database
 
-Asegúrate de crear una base de datos para la aplicación. Por ejemplo, usando psql:
+Make sure to create a database for the application. For example, using psql:
 
 ```sql
-CREATE DATABASE delitos_db;
-CREATE USER postgres WITH PASSWORD 'tu_contraseña';
-GRANT ALL PRIVILEGES ON DATABASE delitos_db TO postgres;
+CREATE DATABASE crimes_db;
+CREATE USER postgres WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE crimes_db TO postgres;
 ```
 
-En el archivo de configuración de la aplicación (DB/config.py o similar), asegúrate de que la cadena de conexión esté configurada, por ejemplo:
+In the application's configuration file (e.g., DB/config.py), make sure the connection string is set up, for example:
 
 
 ```python
-DATABASE_URL = "postgresql://postgres:tu_contraseña@localhost/delitos_db"
+DATABASE_URL = "postgresql://postgres:password@localhost/crimes_db"
 ```
 
-## 2. Migraciones
+## 2. Migrations
 
-### 1. Inicializar Alembic (si aún no lo has hecho)
-Si es la primera vez, inicializa Alembic:
+### 1. Initialize Alembic (if you haven’t done it yet)
+If this is your first time, initialize Alembic:
 
 ```bash
 alembic init migrations
 ```
 
-### 2. Generar una migración
-Para generar una nueva migración basada en los cambios en tus modelos, ejecuta:
+### 2. Generate a migration
+To generate a new migration based on changes in your models, run:
 ```bash
 alembic revision --autogenerate -m "Descripción de los cambios"
 ```
 
 ### 3. Aplicar las migraciones
-Para aplicar las migraciones a la base de datos, usa:
+To apply the migrations to the database, use:
 ```bash
 alembic upgrade head
 ```
 
-## Ejecución de la aplicación
+## Running the application
 
 
-### 1. Ejecutar en desarrollo
-Puedes correr la aplicación con Uvicorn:
+### 1. Run in development
+You can run the application with Uvicorn:
 ```bash
 uvicorn criministica.main:app --reload
 ```
-Nota: Si el directorio raíz de tu proyecto no se llama criministica, asegúrate de referenciarlo correctamente.
+Note: If your project's root directory is not named criministica, make sure to reference it correctly.
 
 
 ## Frontend
-La aplicación incluye un frontend sencillo basado en HTMX que se sirve a través de plantillas Jinja2.
+The application includes a simple frontend based on HTMX which is served through Jinja2 templates.
 
-- La página principal se encuentra en templates/index.html.
+- The main page is located in templates/index.html.
 
-- También hay páginas para cargar contenido parcial, por ejemplo, para estadísticas, en templates/estadisticas_partial.html.
+- There are also pages for loading partial content, such as statistics, in templates/partial_statistics.html.
+
+## Diagrams (Mermaid)
+
+Here are some diagrams to better understand the application's architecture, flow and how to integrate it with other services.
+
+## 🗂️ Database Schema Diagram (Mermaid)
+
+The following ER diagram shows the relationship between provinces, crimes, and crime statistics stored in the system.
+
+### ER Diagram: Crime Statistics Schema
+
+```mermaid
+erDiagram
+    PROVINCE {
+        INT province_id PK
+        STRING province_name
+        INT population
+    }
+
+    CRIME {
+        INT crime_code_snic_id PK
+        STRING crime_code_snic_name
+    }
+
+    CRIME_STATISTICS {
+        INT id PK
+        INT province_id FK
+        INT crime_code_snic_id FK
+        INT year
+        INT act_quantity
+        INT victim_quantity
+        INT male_victims_quantity
+        INT female_victims_quantity
+        INT victim_quantity_sd
+        FLOAT act_rate
+        FLOAT victim_rate
+        FLOAT male_victims_rate
+        FLOAT female_victims_rate
+    }
+
+    PROVINCE ||--o{ CRIME_STATISTICS : has
+    CRIME ||--o{ CRIME_STATISTICS : registers
+```
+
+## 📊 Flow Diagrams (Mermaid)
+
+Below is a sequence diagram illustrating how the application handles a request for crime statistics by province.
+
+### Sequence: Crime Statistics Request
+
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant API as FastAPI
+    participant Sistema_Externo
+
+    Cliente->>API: Solicita estadísticas de delitos por provincia
+    API->>Sistema_Externo: Verifica datos adicionales (si aplica)
+    Sistema_Externo-->>API: Responde con información complementaria
+    API-->>Cliente: Retorna estadísticas en JSON
+```
