@@ -35,11 +35,11 @@ def calculate_crime_rate(db: Session, province_id: int):
     return {str(year): float(rate) for year, rate in rates}
 
 
-def calcular_porcentaje_delitos_provincia(db: Session, provincia_id: int):
-    total_delitos_provincia = db.query(func.sum(CrimeStatistics.act_quantity)) \
-                                .filter(CrimeStatistics.province_id == provincia_id) \
+def calculate_crime_percentage_per_province(db: Session, province_id: int):
+    province_crimes_quantity = db.query(func.sum(CrimeStatistics.act_quantity)) \
+                                .filter(CrimeStatistics.province_id == province_id) \
                                 .scalar() or 0
 
-    total_delitos_nacionales = db.query(func.sum(CrimeStatistics.act_quantity)).scalar() or 0
+    national_crime_quantity = db.query(func.sum(CrimeStatistics.act_quantity)).scalar() or 0
 
-    return (total_delitos_provincia / total_delitos_nacionales) * 100 if total_delitos_nacionales > 0 else 0
+    return (province_crimes_quantity / national_crime_quantity) * 100 if national_crime_quantity > 0 else 0

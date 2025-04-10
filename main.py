@@ -5,7 +5,7 @@ from fastapi.templating import Jinja2Templates
 from routes.province_routes import router as provincia_router
 from routes.crime_routes import router as delito_router
 from routes.statistics_routes import router as estadistica_router
-from routes.estadistica_calculada_routes import router as estadistica_calculada_router
+from routes.calculated_statistics_routes import router as estadistica_calculada_router
 
 app = FastAPI(title="Crime Statistics API", description="API for managing crime statistics in Argentina", version="0.1.3")
 

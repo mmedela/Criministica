@@ -11,8 +11,8 @@ class StatisticsBase(BaseModel):
     female_victims_rate: Optional[float] = None
 
 class StatisticsCreate(StatisticsBase):
-    provincia_id: int
-    codigo_delito_snic_id: int
+    province_id: int
+    crime_code_snic_id: int
 
 class StatisticsUpdate(StatisticsBase):
     pass

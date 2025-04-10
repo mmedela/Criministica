@@ -84,9 +84,9 @@ def update_provinces_batch_service(db: Session, updates: List[ProvinceUpdate]) -
         db.rollback()
         raise HTTPException(status_code=500, detail=f"Error updating provinces: {e}")
 
-def delete_provinces_batch_service(db: Session, provincia_ids: List[int]) -> int:
+def delete_provinces_batch_service(db: Session, province_ids: List[int]) -> int:
     try:
-        stmt = db.delete(Province).where(Province.province_id.in_(provincia_ids))
+        stmt = db.delete(Province).where(Province.province_id.in_(province_ids))
         result = db.execute(stmt)
         db.commit()
         if result.rowcount == 0:

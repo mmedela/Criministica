@@ -46,7 +46,7 @@ def upsert_statistics(row, province, crime):
         return val if pd.notnull(val) else None
 
     stmt = insert(CrimeStatistics).values(
-        province_id=province.provincia_id,
+        province_id=province.province_id,
         crime_code_snic_id=crime.crime_code_snic_id,
         year=row[YEAR],
         act_quantity=to_number(row[ACT_QUANTITY]),
