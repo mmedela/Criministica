@@ -2,14 +2,12 @@ from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from routes.province_routes import router as provincia_router
-from routes.crime_routes import router as delito_router
-from routes.statistics_routes import router as estadistica_router
-from routes.calculated_statistics_routes import router as estadistica_calculada_router
+from routes.province_routes import router as province_router
+from routes.crime_routes import router as crime_router
+from routes.statistics_routes import router as statistics_router
+from routes.calculated_statistics_routes import router as calculated_statistics_router
 
 app = FastAPI(title="Crime Statistics API", description="API for managing crime statistics in Argentina", version="0.1.3")
-
-#app.mount("/static", StaticFiles(directory="static"), name="static")
 
 templates = Jinja2Templates(directory="templates")
 
@@ -39,10 +37,10 @@ async def generic_exception_handler(request: Request, exc: Exception):
         }
     )
 
-app.include_router(provincia_router)
-app.include_router(delito_router)
-app.include_router(estadistica_router)
-app.include_router(estadistica_calculada_router)
+app.include_router(province_router)
+app.include_router(crime_router)
+app.include_router(statistics_router)
+app.include_router(calculated_statistics_router)
 
 
 
@@ -52,7 +50,7 @@ def read_root(request: Request):
 
 @app.get("/provinces-population", response_class=HTMLResponse)
 def read_root(request: Request):
-    return templates.TemplateResponse("poblaciones_provincias.html", {"request": request})
+    return templates.TemplateResponse("provinces_population.html", {"request": request})
 
 @app.get("/general-statistics", response_class=HTMLResponse)
 def read_root(request: Request):
@@ -67,8 +65,8 @@ def health_check():
     return {"status": "Running"}
 
 @app.get("/upload", response_class=HTMLResponse)
-def upload_page(request: Request):
-    return templates.TemplateResponse("provincias_upload.html", {"request": request})
+def upload_population_page(request: Request):
+    return templates.TemplateResponse("upload_provinces_population.html", {"request": request})
 
 if __name__ == "__main__":
     import uvicorn
