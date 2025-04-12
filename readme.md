@@ -100,7 +100,7 @@ CREATE TABLE crime_statistics (
 );
 ```
 
-In the application's configuration file (e.g., DB/config.py), make sure the connection string is set up, for example:
+In the application's configuration file `(e.g., DB/config.py)`, make sure the connection string is set up, for example:
 
 
 ```python
@@ -128,15 +128,18 @@ To apply the migrations to the database, use:
 alembic upgrade head
 ```
 
+### ⚠️ Note on Migrations
+Following the database translation process, existing Alembic migrations have become obsolete and are no longer in active use. However, their implementation and evolution can still be reviewed in the project's commit history, should you need to reference or understand past changes.
+
 ### 4. Populate DB
-To populate de data base you are gonna have to run the populate_db script. In the application's configuration file (e.g., DB/config.py), make sure the CSV_ROUTE variable is set to a CSV file containing the pertinent data. A valid file has already been provided. Then run 
+To populate the database, run the `populate_db` script. Before doing so, ensure that the `CSV_ROUTE` variable in the application's configuration file `(e.g., DB/config.py)` points to a valid CSV file containing the necessary data. A properly formatted CSV file has already been provided.
 
 ```bash
 python DB\populate_db.py
 ```
 
-To demonstrate different aspects of the system, a separate file has been provided to fill the provinces's population. It can be uploaded by accessing the route `/provinces/upload_population`
-
+Additionally, to demonstrate specific system features, a separate CSV file is available to populate the population data for provinces. You can upload this file by navigating to the `/provinces/upload_population`
+ route. 
 
 ## Running the application
 
