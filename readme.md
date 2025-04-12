@@ -64,12 +64,40 @@ sudo apt-get install postgresql postgresql-contrib
 
 ## 2. Configure the Database
 
-Make sure to create a database for the application. For example, using psql:
+Make sure to create a database and tables needed for the aplication for the application. For example, using psql:
 
 ```sql
 CREATE DATABASE crimes_db;
 CREATE USER postgres WITH PASSWORD 'password';
 GRANT ALL PRIVILEGES ON DATABASE crimes_db TO postgres;
+
+CREATE TABLE provinces (
+    province_id INTEGER PRIMARY KEY,
+    province_name VARCHAR,
+    population INTEGER
+);
+
+CREATE TABLE crimes (
+    crime_code_snic_id INTEGER PRIMARY KEY,
+    crime_code_snic_name VARCHAR
+);
+
+CREATE TABLE crime_statistics (
+    id INTEGER PRIMARY KEY,
+    province_id INTEGER REFERENCES provinces(province_id),
+    crime_code_snic_id INTEGER REFERENCES crimes(crime_code_snic_id),
+    year INTEGER,
+    act_quantity INTEGER,
+    victim_quantity INTEGER,
+    male_victims_quantity INTEGER,
+    female_victims_quantity INTEGER,
+    victim_quantity_sd INTEGER,
+    act_rate NUMERIC,
+    victim_rate NUMERIC,
+    male_victims_rate NUMERIC,
+    female_victims_rate NUMERIC,
+    CONSTRAINT uq_statistics UNIQUE (province_id, crime_code_snic_id, year)
+);
 ```
 
 In the application's configuration file (e.g., DB/config.py), make sure the connection string is set up, for example:
@@ -94,11 +122,21 @@ To generate a new migration based on changes in your models, run:
 alembic revision --autogenerate -m "Descripción de los cambios"
 ```
 
-### 3. Aplicar las migraciones
+### 3. Run migrations
 To apply the migrations to the database, use:
 ```bash
 alembic upgrade head
 ```
+
+### 4. Populate DB
+To populate de data base you are gonna have to run the populate_db script. In the application's configuration file (e.g., DB/config.py), make sure the CSV_ROUTE variable is set to a CSV file containing the pertinent data. A valid file has already been provided. Then run 
+
+```bash
+python DB\populate_db.py
+```
+
+To demonstrate different aspects of the system, a separate file has been provided to fill the provinces's population. It can be uploaded by accessing the route `/provinces/upload_population`
+
 
 ## Running the application
 
