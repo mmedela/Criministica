@@ -11,8 +11,6 @@ instance/
 logs/
 *.log
 
-migrations/versions/
-
 .ipynb_checkpoints/
 
 .vscode/
