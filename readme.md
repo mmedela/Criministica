@@ -100,7 +100,7 @@ CREATE TABLE crime_statistics (
 );
 ```
 
-In the application's configuration file `(e.g., DB/config.py)`, make sure the connection string is set up, for example:
+In the application's configuration file (e.g., `DB/config.py`), make sure the connection string is set up, for example:
 
 
 ```python
@@ -132,7 +132,7 @@ alembic upgrade head
 Following the database translation process, existing Alembic migrations have become obsolete and are no longer in active use. However, their implementation and evolution can still be reviewed in the project's commit history, should you need to reference or understand past changes.
 
 ### 4. Populate DB
-To populate the database, run the `populate_db` script. Before doing so, ensure that the `CSV_ROUTE` variable in the application's configuration file `(e.g., DB/config.py)` points to a valid CSV file containing the necessary data. A properly formatted CSV file has already been provided.
+To populate the database, run the `populate_db` script. Before doing so, ensure that the `CSV_ROUTE` variable in the application's configuration file (e.g., `DB/config.py`) points to a valid CSV file containing the necessary data. A properly formatted CSV file has already been provided.
 
 ```bash
 python DB\populate_db.py
