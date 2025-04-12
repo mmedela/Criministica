@@ -22,7 +22,7 @@ class CrimeStatistics(Base):
     crimes = relationship("Crime", back_populates="statistics")
     
     __table_args__ = (
-        sa.UniqueConstraint('provincprovince_idia_id', 'crime_code_snic_id', 'year', name='uq_statistics'),
+        sa.UniqueConstraint('province_id', 'crime_code_snic_id', 'year', name='uq_statistics'),
     )
     
     def __repr__(self):

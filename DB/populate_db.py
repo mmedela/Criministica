@@ -1,13 +1,14 @@
 import pandas as pd
 from sqlalchemy.dialects.postgresql import insert
 from init_db import session
-from DB.models.Province import Province
-from DB.models.Crime import Crime
-from DB.models.CrimeStatistics import CrimeStatistics
+from models.Province import Province
+from models.Crime import Crime
+from models.CrimeStatistics import CrimeStatistics
 from sqlalchemy.exc import IntegrityError
 from config import CSV_ROUTE
+import os
 
-df = pd.read_csv(CSV_ROUTE, na_values=['', 'NULL'])
+df = pd.read_csv(os.path.join(os.path.dirname(__file__), CSV_ROUTE), na_values=['', 'NULL'])
 
 db_session = session()
 
@@ -31,14 +32,14 @@ def upsert_provinces(row):
     stmt = insert(Province).values(
         province_id=row[PROVINCE_ID_COLUMN],
         province_name=row[PROVINCE_NAME_COLUMN]
-    ).on_conflict_do_nothing(index_elements=[PROVINCE_ID_COLUMN])
+    ).on_conflict_do_nothing(index_elements=['province_id'])
     db_session.execute(stmt)
 
 def upsert_crimes(row):
     stmt = insert(Crime).values(
-        crime_code_snic_id=row[CRIME_CODE_SNIC_NAME],
+        crime_code_snic_id=row[CRIME_CODE_SNIC_ID],
         crime_code_snic_name=row[CRIME_CODE_SNIC_NAME]
-    ).on_conflict_do_nothing(index_elements=[CRIME_CODE_SNIC_NAME])
+    ).on_conflict_do_nothing(index_elements=['crime_code_snic_id'])
     db_session.execute(stmt)
 
 def upsert_statistics(row, province, crime):
@@ -59,7 +60,7 @@ def upsert_statistics(row, province, crime):
         male_victims_rate=to_number(row[MALE_VICTIMS_RATE]),
         female_victims_rate=to_number(row[FEMALE_VICTIMS_RATE])
     ).on_conflict_do_nothing(
-        index_elements=[PROVINCE_ID_COLUMN, CRIME_CODE_SNIC_ID, YEAR]
+        index_elements=['province_id', 'crime_code_snic_id', 'year']
     )
     db_session.execute(stmt)
 
